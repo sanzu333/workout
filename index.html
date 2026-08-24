@@ -1679,6 +1679,14 @@
       ground:true,
       muscles:["三角筋","僧帽筋","上腕三頭筋"]
     },
+    machineshoulderpress: {
+      head:[90,39,9],
+      bones:[{name:'torso',x1:90,y1:81,x2:90,y2:45,hl:true}, {name:'thigh0',x1:90,y1:81,x2:90,y2:105}, {name:'shin0',x1:90,y1:105,x2:90,y2:129}, {name:'upper0',x1:90,y1:45,x2:79.5,y2:26.85,hl:true}, {name:'fore0',x1:79.5,y1:26.85,x2:69.75,y2:9.9}, {name:'upper1',x1:90,y1:45,x2:100.5,y2:26.85,hl:true}, {name:'fore1',x1:100.5,y1:26.85,x2:110.25,y2:9.9}],
+      joints:[{x:90,y:105}, {x:79.5,y:26.85,hl:true}, {x:100.5,y:26.85,hl:true}],
+      front:[{t:'rect',x:63,y:6,w:54,h:7.5,rx:2}],
+      ground:true,
+      muscles:["三角筋","僧帽筋","上腕三頭筋"]
+    },
     legcurl: {
       head:[85.5,87,9],
       bones:[{name:'torso',x1:127.5,y1:87,x2:91.5,y2:87}, {name:'thigh0',x1:127.5,y1:87,x2:123.3,y2:110.7,hl:true}, {name:'shin0',x1:123.3,y1:110.7,x2:135.3,y2:89.85,hl:true}, {name:'upper0',x1:91.5,y1:87,x2:84.3,y2:67.2}, {name:'fore0',x1:84.3,y1:67.2,x2:77.7,y2:48.9}],
@@ -1691,6 +1699,14 @@
       bones:[{name:'torso',x1:90,y1:81,x2:90,y2:45}, {name:'thigh0',x1:90,y1:81,x2:90,y2:105}, {name:'shin0',x1:90,y1:105,x2:90,y2:129}, {name:'upper0',x1:90,y1:45,x2:86.4,y2:65.7,hl:true}, {name:'fore0',x1:86.4,y1:65.7,x2:103.35,y2:55.95,hl:true}],
       joints:[{x:90,y:105}, {x:86.4,y:65.7,hl:true}],
       front:[{t:'line',x1:89.85,y1:55.95,x2:116.85,y2:55.95},{t:'circle',cx:89.85,cy:55.95,r:4.5},{t:'circle',cx:116.85,cy:55.95,r:4.5}],
+      ground:true,
+      muscles:["上腕二頭筋","前腕"]
+    },
+    dbcurl: {
+      head:[90,39,9],
+      bones:[{name:'torso',x1:90,y1:81,x2:90,y2:45}, {name:'thigh0',x1:90,y1:81,x2:90,y2:105}, {name:'shin0',x1:90,y1:105,x2:90,y2:129}, {name:'upper0',x1:90,y1:45,x2:86.4,y2:65.7,hl:true}, {name:'fore0',x1:86.4,y1:65.7,x2:103.35,y2:55.95,hl:true}],
+      joints:[{x:90,y:105}, {x:86.4,y:65.7,hl:true}],
+      front:[{t:'circle',cx:103.35,cy:55.95,r:4.5}],
       ground:true,
       muscles:["上腕二頭筋","前腕"]
     },
@@ -1784,6 +1800,11 @@
       steps:['ダンベルを頭上までまっすぐ押し上げる','肘を伸ばしきる手前で止める','コントロールしながら肩の高さまで戻す'],
       tips:['腰を反りすぎない(腹圧を入れて体幹を安定させる)','ダンベルが顔の前を通りすぎないよう、軌道はやや外側に']
     },
+    machineshoulderpress: {
+      setup:'シートに座り、高さを調整してグリップが肩の高さにくるようにセットする。',
+      steps:['グリップをまっすぐ頭上に押し上げる','肘を伸ばしきる手前で止める','コントロールしながら肩の高さまで戻す'],
+      tips:['背もたれに背中をつけたまま腰を反りすぎない','シートの高さが合っていないと肩に余計な負担がかかるので最初に調整する']
+    },
     legcurl: {
       setup:'うつ伏せでマシンに乗り、パッドをかかとの上あたりに合わせる。',
       steps:['かかとをお尻に近づけるように膝を曲げる','収縮した位置で一瞬止める','コントロールしながらゆっくり戻す'],
@@ -1793,6 +1814,11 @@
       setup:'肩幅程度のスタンスで立ち、バーを肩幅で順手に握る。肘は体側につける。',
       steps:['肘の位置を固定したまま前腕を巻き上げる','収縮位置で軽く絞る','ゆっくり伸ばしきる位置まで戻す'],
       tips:['体を反らして反動をつけない(チーティング注意)','肘が前後に動かないよう固定する']
+    },
+    dbcurl: {
+      setup:'肩幅程度のスタンスで立ち、両手にダンベルを持って腕を伸ばした状態からスタート。肘は体側につける。',
+      steps:['肘の位置を固定したまま前腕を巻き上げる','収縮位置で軽く絞る','ゆっくり伸ばしきる位置まで戻す'],
+      tips:['体を反らして反動をつけない(チーティング注意)','左右均等に上げる。片方だけ勢いをつけないよう注意']
     },
     triceps: {
       setup:'ベンチに仰向け、バーベルまたはダンベルを腕を伸ばした状態で胸の上に構える。',
@@ -1830,6 +1856,18 @@
       tips:['腰が反ると痛めやすいので、届く範囲から始める','膝立ちがきつければ可動域を小さくしてOK']
     }
   };
+
+  // Custom exercises are always stored with pose:null (there's no way to
+  // hand-author a diagram for an arbitrary typed-in name), but a handful of
+  // common substitute names are worth recognizing by name alone so they
+  // still get an illustration/how-to instead of nothing.
+  var NAME_TO_POSE = {
+    'ダンベルカール': 'dbcurl',
+    'マシンショルダープレス': 'machineshoulderpress'
+  };
+  function resolvePoseKey(ex){
+    return ex.pose || NAME_TO_POSE[ex.name] || null;
+  }
 
   function youtubeSearchUrl(query){
     return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(query);
@@ -2611,15 +2649,16 @@
   function renderExRow(ex){
     var last = getLastEntry(ex.id);
     var s = computeSuggestion(ex, last);
+    var poseKey = resolvePoseKey(ex);
     return '<div class="ex-row' + (ex.main ? ' main' : '') + '" data-ex-id="' + ex.id + '" data-sets="' + ex.sets + '" data-inc="' + (ex.inc === null ? '' : ex.inc) + '">' +
       '<div class="ex-row-top" tabindex="0" role="button" aria-expanded="false">' +
-        '<div class="ex-icon">' + renderIcon(ex.pose) + '<span class="ex-num-badge">' + String(ex.order).padStart(2,'0') + '</span></div>' +
+        '<div class="ex-icon">' + renderIcon(poseKey) + '<span class="ex-num-badge">' + String(ex.order).padStart(2,'0') + '</span></div>' +
         '<span class="ex-info"><span class="ex-name">' + (ex.main ? '<span class="main-tag">MAIN</span>' : '') + ex.name + '</span>' +
         (ex.note ? '<span class="ex-note">' + ex.note + '</span>' : '') +
-        muscleTagsHtml(ex.pose) + '</span>' +
+        muscleTagsHtml(poseKey) + '</span>' +
         '<span class="ex-target-wrap"><span class="ex-target">' + targetStr(ex) + (ex.inc !== null ? '<span class="inc">+' + ex.inc + 'kgずつ</span>' : '') + '</span><span class="chevron" aria-hidden="true">▸</span></span>' +
       '</div>' +
-      formPanelHtml(ex.pose, ex.name) +
+      formPanelHtml(poseKey, ex.name) +
       '<div class="ex-log">' +
         '<div class="set-inputs">' + setInputsHtml(ex, last) + '</div>' +
         '<div class="ex-suggestion"><span class="chip ' + s.chip + '">' + s.label + '</span><span>' + s.detail + '</span></div>' +
