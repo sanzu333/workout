@@ -912,7 +912,7 @@
   .chip.hold{ background:var(--accent-soft); color:var(--accent-2); }
   .chip.neutral{ background:var(--border); color:var(--text-dim); }
 
-  .history-toggle{
+  .history-toggle, .weight-history-toggle{
     background:none;
     border:none;
     padding:8px 2px;
@@ -925,8 +925,8 @@
     cursor:pointer;
     display:inline-block;
   }
-  .history-toggle:hover{ color:var(--text); }
-  .history-panel{ margin-top:8px; }
+  .history-toggle:hover, .weight-history-toggle:hover{ color:var(--text); }
+  .history-panel, .weight-history-panel{ margin-top:8px; }
   .history-panel[hidden]{ display:none; }
 
   table.history{
@@ -1422,6 +1422,16 @@
 
       <div class="progress-stats" id="progress-stats"></div>
       <div class="week-tracker" id="week-tracker"></div>
+
+      <div class="chart-card">
+        <div class="chart-card-head">
+          <p class="form-label" style="margin:0;">体重の推移</p>
+          <div class="chart-summary" id="weight-chart-summary"></div>
+        </div>
+        <div class="chart-wrap" id="weight-chart-wrap"></div>
+        <button type="button" class="weight-history-toggle" id="weight-history-toggle" aria-expanded="false">履歴を見る</button>
+        <div class="weight-history-panel" id="weight-history-panel" hidden></div>
+      </div>
 
       <div class="chart-card">
         <div class="chart-card-head">
@@ -2044,6 +2054,7 @@
         profile: loadProfile(),
         phase1Override: loadPhase1Override(),
         menu: loadMenu(),
+        weightLog: loadWeightLog(),
         exportedAt: new Date().toISOString()
       }, null, 2);
     }
@@ -2152,6 +2163,7 @@
         if(data.profile){ saveProfile(data.profile); }
         if(data.phase1Override !== undefined){ savePhase1Override(data.phase1Override); }
         if(data.menu){ saveMenu(mergeMenu(loadMenu(), data.menu)); }
+        if(data.weightLog){ saveWeightLog(mergeWeightLogs(loadWeightLog(), data.weightLog)); }
         renderLists();
         renderPhaseSchedule();
         currentChartExercise = null; // let the progress chart re-pick its default now that new data exists
@@ -2834,6 +2846,66 @@
     }
   }
 
+  function weightHistoryRowsHtml(){
+    var log = loadWeightLog();
+    if(log.length === 0){
+      return '<div class="empty-history">まだ記録がありません</div>';
+    }
+    var indexed = log.map(function(entry, idx){ return {entry:entry, idx:idx}; });
+    var recent = indexed.slice().reverse().slice(0, 10);
+    var rows = recent.map(function(item){
+      return '<tr><td>' + item.entry.date + '</td><td>' + item.entry.weight + 'kg</td>' +
+        '<td class="del-cell"><button type="button" class="delete-weight-entry" data-idx="' + item.idx + '" aria-label="この記録を削除">削除</button></td></tr>';
+    }).join('');
+    return '<div class="history-wrap"><table class="history"><thead><tr><th>日付</th><th>体重</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+  }
+
+  function renderWeightChart(){
+    var wrap = document.getElementById('weight-chart-wrap');
+    var summaryEl = document.getElementById('weight-chart-summary');
+    if(!wrap) return;
+    var log = loadWeightLog();
+    var points = log.map(function(entry){
+      var d = parseIsoDate(entry.date);
+      return {y:entry.weight, label:(d.getMonth() + 1) + '/' + d.getDate(), date:entry.date};
+    });
+    wrap.innerHTML = buildLineChart(points);
+    if(summaryEl){
+      if(points.length === 0){
+        summaryEl.innerHTML = '<span class="chart-summary-empty">まだ記録がありません</span>';
+      } else {
+        var first = points[0].y;
+        var last = points[points.length - 1].y;
+        var delta = round1(last - first);
+        var deltaStr = (delta > 0 ? '+' : '') + delta + 'kg';
+        var deltaClass = delta > 0 ? 'up' : (delta < 0 ? 'warn' : 'neutral');
+        summaryEl.innerHTML =
+          '<span class="chart-current"><span class="chart-current-value">' + last + 'kg</span><span class="chart-current-label">現在の記録</span></span>' +
+          (points.length > 1 ? '<span class="chip ' + deltaClass + '">' + deltaStr + '</span>' : '');
+      }
+    }
+    var panel = document.getElementById('weight-history-panel');
+    if(panel && !panel.hidden){ panel.innerHTML = weightHistoryRowsHtml(); }
+  }
+
+  function initWeightHistoryToggle(){
+    var btn = document.getElementById('weight-history-toggle');
+    var panel = document.getElementById('weight-history-panel');
+    if(!btn || !panel) return;
+    btn.addEventListener('click', function(){
+      if(panel.hidden){
+        panel.innerHTML = weightHistoryRowsHtml();
+        panel.hidden = false;
+        btn.textContent = '履歴を閉じる';
+        btn.setAttribute('aria-expanded', 'true');
+      } else {
+        panel.hidden = true;
+        btn.textContent = '履歴を見る';
+        btn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
   function populateExerciseSelect(){
     var sel = document.getElementById('chart-exercise-select');
     if(!sel) return;
@@ -2955,6 +3027,7 @@
   function renderProgress(){
     renderProgressStats();
     renderWeekTracker();
+    renderWeightChart();
     populateExerciseSelect();
     renderMainChart(currentChartExercise);
     renderMiniCharts();
@@ -2978,28 +3051,44 @@
     toast._hideTimer = setTimeout(function(){ toast.classList.remove('show'); }, 3200);
   }
 
+  // Native confirm() dialogs can be silently blocked inside a sandboxed
+  // artifact iframe (the call returns without ever showing a prompt), which
+  // made delete buttons look broken. Confirm inline instead: first tap arms
+  // it, a second tap within a few seconds actually deletes. Returns true only
+  // on the confirming (second) tap.
+  function armOrConfirmDelete(btn, armedText, restText){
+    if(btn.dataset.confirm !== '1'){
+      btn.dataset.confirm = '1';
+      btn.textContent = armedText;
+      btn.classList.add('confirming');
+      clearTimeout(btn._confirmTimer);
+      btn._confirmTimer = setTimeout(function(){
+        btn.dataset.confirm = '0';
+        btn.textContent = restText;
+        btn.classList.remove('confirming');
+      }, 4000);
+      return false;
+    }
+    clearTimeout(btn._confirmTimer);
+    return true;
+  }
+
   function initDeleteHandlers(){
     document.addEventListener('click', function(e){
-      var btn = e.target.closest('.delete-entry');
-      if(!btn) return;
-
-      // Native confirm() dialogs can be silently blocked inside a sandboxed
-      // artifact iframe (the call returns without ever showing a prompt), which
-      // made this button look broken. Confirm inline instead: first tap arms it,
-      // a second tap within a few seconds actually deletes.
-      if(btn.dataset.confirm !== '1'){
-        btn.dataset.confirm = '1';
-        btn.textContent = '本当に削除？';
-        btn.classList.add('confirming');
-        clearTimeout(btn._confirmTimer);
-        btn._confirmTimer = setTimeout(function(){
-          btn.dataset.confirm = '0';
-          btn.textContent = '削除';
-          btn.classList.remove('confirming');
-        }, 4000);
+      var wBtn = e.target.closest('.delete-weight-entry');
+      if(wBtn){
+        if(!armOrConfirmDelete(wBtn, '本当に削除？', '削除')) return;
+        var widx = parseInt(wBtn.dataset.idx, 10);
+        if(deleteWeightEntry(widx)){
+          renderWeightChart();
+          markNeedsBackup();
+        }
         return;
       }
-      clearTimeout(btn._confirmTimer);
+
+      var btn = e.target.closest('.delete-entry');
+      if(!btn) return;
+      if(!armOrConfirmDelete(btn, '本当に削除？', '削除')) return;
 
       var exId = btn.dataset.exId;
       var idx = parseInt(btn.dataset.idx, 10);
@@ -3114,6 +3203,45 @@
     try{ localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); }catch(e){}
   }
 
+  // ---- body weight history (separate from the single current-value profile.weight) ----
+  var WEIGHT_LOG_KEY = 'atsumi-keikaku-weight-log-v1';
+
+  function loadWeightLog(){
+    try{
+      var raw = localStorage.getItem(WEIGHT_LOG_KEY);
+      var arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr : [];
+    }catch(e){ return []; }
+  }
+  function saveWeightLog(arr){
+    try{ localStorage.setItem(WEIGHT_LOG_KEY, JSON.stringify(arr)); }catch(e){}
+  }
+  function upsertWeightEntry(date, weight){
+    if(isNaN(weight)) return;
+    var log = loadWeightLog();
+    var idx = log.findIndex(function(e){ return e.date === date; });
+    if(idx !== -1){ log[idx] = {date:date, weight:weight}; }
+    else { log.push({date:date, weight:weight}); }
+    log.sort(function(a, b){ return a.date < b.date ? -1 : (a.date > b.date ? 1 : 0); });
+    saveWeightLog(log);
+  }
+  function deleteWeightEntry(idx){
+    var log = loadWeightLog();
+    if(log[idx] === undefined) return false;
+    log.splice(idx, 1);
+    saveWeightLog(log);
+    return true;
+  }
+  function mergeWeightLogs(base, incoming){
+    var byDate = {};
+    base.forEach(function(e){ byDate[e.date] = e; });
+    (incoming || []).forEach(function(e){
+      if(!byDate[e.date]){ byDate[e.date] = e; }
+    });
+    return Object.keys(byDate).map(function(d){ return byDate[d]; })
+      .sort(function(a, b){ return a.date < b.date ? -1 : (a.date > b.date ? 1 : 0); });
+  }
+
   function updateBmi(){
     var p = loadProfile();
     var hM = p.height / 100;
@@ -3149,9 +3277,11 @@
         age: isNaN(a) ? current.age : a
       };
       saveProfile(p);
+      if(!isNaN(w)){ upsertWeightEntry(isoDate(new Date()), w); }
       updateBmi();
       updateNutritionCallout();
       markNeedsBackup();
+      renderWeightChart();
     }
     [wInput, hInput, aInput].forEach(function(inp){ inp.addEventListener('change', persist); });
     updateBmi();
@@ -3266,6 +3396,7 @@
   initMenuEditActions();
   renderEquipmentLists();
   initEquipmentAdd();
+  initWeightHistoryToggle();
   renderProgress();
 })();
 </script>
