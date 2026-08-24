@@ -421,6 +421,7 @@
     background:var(--bg);
     color:var(--text);
   }
+  .menu-add-form input:disabled{ opacity:.55; }
   .menu-add-form .checkbox-field{
     display:flex;
     align-items:center;
@@ -1971,15 +1972,22 @@
       return {
         removed: Array.isArray(m.removed) ? m.removed : [],
         order: (m.order && typeof m.order === 'object') ? m.order : {},
-        custom: Array.isArray(m.custom) ? m.custom : []
+        custom: Array.isArray(m.custom) ? m.custom : [],
+        overrides: (m.overrides && typeof m.overrides === 'object') ? m.overrides : {}
       };
-    }catch(e){ return {removed:[], order:{}, custom:[]}; }
+    }catch(e){ return {removed:[], order:{}, custom:[], overrides:{}}; }
   }
   function saveMenu(m){
     try{ localStorage.setItem(MENU_KEY, JSON.stringify(m)); }catch(e){}
   }
   function allExercises(){
-    return EXERCISES.concat(loadMenu().custom);
+    var menu = loadMenu();
+    var overrides = menu.overrides;
+    function applyOverride(ex){
+      var o = overrides[ex.id];
+      return o ? Object.assign({}, ex, o) : ex;
+    }
+    return EXERCISES.map(applyOverride).concat(menu.custom.map(applyOverride));
   }
   function getDayExercises(day){
     var menu = loadMenu();
@@ -2072,6 +2080,24 @@
     menu.custom[idx] = updated;
     saveMenu(menu);
     return updated;
+  }
+  // Built-in exercises can't be renamed or rewritten in place (their
+  // definition lives in code, and the name is what progress tracking keys
+  // on) — only sets/rep range/increment are adjustable, stored as a
+  // per-exercise override layered on top of the base definition.
+  function updateBuiltinOverride(exId, fields){
+    var menu = loadMenu();
+    menu.overrides[exId] = {
+      sets: fields.sets,
+      repLow: fields.repLow,
+      repHigh: fields.repHigh,
+      inc: fields.bodyweight ? null : fields.inc
+    };
+    saveMenu(menu);
+  }
+  function updateExercise(exId, fields){
+    if(exId.indexOf('custom-') === 0){ return updateCustomExercise(exId, fields); }
+    return updateBuiltinOverride(exId, fields);
   }
 
   var STORAGE_KEY = 'atsumi-keikaku-log-v1';
@@ -2253,7 +2279,8 @@
       if(!customIds[ex.id]){ custom.push(ex); customIds[ex.id] = true; }
     });
     var order = Object.assign({}, incoming.order || {}, base.order);
-    return {removed: removed, order: order, custom: custom};
+    var overrides = Object.assign({}, incoming.overrides || {}, base.overrides || {});
+    return {removed: removed, order: order, custom: custom, overrides: overrides};
   }
 
   function initRestoreInput(){
@@ -2683,13 +2710,12 @@
 
   // ---- per-day menu editing: reorder / remove / restore / add a custom exercise ----
   function menuEditRowHtml(day, ex, idx, total){
-    var isCustom = ex.id.indexOf('custom-') === 0;
     return '<div class="menu-edit-row">' +
       '<span class="menu-edit-name">' + ex.name + '</span>' +
       '<div class="menu-edit-btns">' +
         '<button type="button" data-menu-up="' + ex.id + '" data-menu-day="' + day + '" aria-label="上へ"' + (idx === 0 ? ' disabled' : '') + '>▲</button>' +
         '<button type="button" data-menu-down="' + ex.id + '" data-menu-day="' + day + '" aria-label="下へ"' + (idx === total - 1 ? ' disabled' : '') + '>▼</button>' +
-        (isCustom ? '<button type="button" data-menu-edit="' + ex.id + '" data-menu-day="' + day + '" aria-label="編集">✎</button>' : '') +
+        '<button type="button" data-menu-edit="' + ex.id + '" data-menu-day="' + day + '" aria-label="編集">✎</button>' +
         '<button type="button" class="menu-edit-remove" data-menu-remove="' + ex.id + '" data-menu-day="' + day + '" data-confirm="0">外す</button>' +
       '</div>' +
     '</div>';
@@ -2783,7 +2809,7 @@
     var confirmBtn = document.querySelector('[data-menu-add-confirm="' + day + '"]');
     if(confirmBtn){ delete confirmBtn.dataset.editingId; confirmBtn.textContent = '追加する'; }
     var nameEl = document.getElementById('menu-add-name-' + day);
-    if(nameEl) nameEl.value = '';
+    if(nameEl){ nameEl.value = ''; nameEl.disabled = false; }
     var setsEl = document.getElementById('menu-add-sets-' + day);
     if(setsEl) setsEl.value = 3;
     var lowEl = document.getElementById('menu-add-replow-' + day);
@@ -2852,7 +2878,12 @@
         if(!ex || !eform) return;
         eform.hidden = false;
         if(etoggle) etoggle.setAttribute('aria-expanded', 'true');
-        document.getElementById('menu-add-name-' + eday).value = ex.name;
+        var editNameEl = document.getElementById('menu-add-name-' + eday);
+        editNameEl.value = ex.name;
+        // Built-in exercises can't be renamed (the name is what progress
+        // tracking and the equipment reference key on) — only sets/reps/
+        // increment are adjustable for those.
+        editNameEl.disabled = exId.indexOf('custom-') !== 0;
         document.getElementById('menu-add-sets-' + eday).value = ex.sets;
         document.getElementById('menu-add-replow-' + eday).value = ex.repLow;
         document.getElementById('menu-add-rephigh-' + eday).value = ex.repHigh;
@@ -2895,7 +2926,7 @@
         if(!fields){ document.getElementById('menu-add-name-' + day2).focus(); return; }
         fields.day = day2;
         if(addConfirm.dataset.editingId){
-          updateCustomExercise(addConfirm.dataset.editingId, fields);
+          updateExercise(addConfirm.dataset.editingId, fields);
         } else {
           addCustomExercise(fields);
         }
