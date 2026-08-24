@@ -1836,16 +1836,24 @@
   }
 
   function formPanelHtml(poseKey, exName){
+    // The video link only needs the exercise's name, not hand-authored pose
+    // data, so it stays available even for a custom exercise with no
+    // illustration/how-to text (poseKey is null for those).
+    var videoUrl = youtubeSearchUrl(exName + ' やり方');
+    var videoLinkHtml = '<a class="video-link" href="' + videoUrl + '" target="_blank" rel="noopener">▶ 「' + exName + ' やり方」をYouTubeで見る</a>';
     var f = FORMS[poseKey];
-    if(!f) return '<div class="form-panel" hidden></div>';
+    if(!f){
+      return '<div class="form-panel" hidden>' +
+        '<div class="form-block">' + videoLinkHtml + '</div>' +
+      '</div>';
+    }
     var steps = f.steps.map(function(s){ return '<li>' + s + '</li>'; }).join('');
     var tips = f.tips.map(function(t){ return '<li>' + t + '</li>'; }).join('');
-    var videoUrl = youtubeSearchUrl(exName + ' やり方');
     return '<div class="form-panel" hidden>' +
       '<div class="form-block"><span class="form-label">セットポジション</span><p>' + f.setup + '</p></div>' +
       '<div class="form-block"><span class="form-label">動作の流れ</span><ol>' + steps + '</ol></div>' +
       '<div class="form-block"><span class="form-label">フォームのポイント</span><ul>' + tips + '</ul>' +
-        '<a class="video-link" href="' + videoUrl + '" target="_blank" rel="noopener">▶ 「' + exName + ' やり方」をYouTubeで見る</a>' +
+        videoLinkHtml +
       '</div>' +
     '</div>';
   }
