@@ -177,6 +177,26 @@
   .backup-status.show{ opacity:1; }
   .backup-status.warn{ color:var(--danger); }
   .backup-btn.needs-backup::after{ content:''; display:inline-block; width:5px; height:5px; border-radius:50%; background:var(--text-dim); margin-left:6px; opacity:.6; }
+  .sync-status2{
+    font-family:var(--mono);
+    font-size:.72rem;
+    font-weight:600;
+    padding:4px 10px;
+    border-radius:999px;
+    border:1px solid var(--border);
+    color:var(--text-dim);
+    background:var(--surface);
+  }
+  .sync-status2.ok{ color:var(--success); border-color:var(--success); background:var(--success-soft); }
+  .sync-status2.error{ color:var(--warning); border-color:var(--warning); background:var(--warning-soft); }
+  .sync-setup-form[hidden]{ display:none; }
+  .sync-setup-form{
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    background:var(--surface);
+    padding:14px 16px;
+    margin-top:12px;
+  }
   .recover-banner[hidden]{ display:none; }
   .recover-banner{
     display:flex;
@@ -1272,7 +1292,25 @@
       <button type="button" class="backup-btn" id="backup-btn">📥 バックアップを保存</button>
       <label class="backup-btn" for="restore-input">📤 バックアップから復元</label>
       <input type="file" id="restore-input" accept="application/json,.json" hidden>
+      <button type="button" class="backup-btn" id="sync-setup-toggle" aria-expanded="false">☁️ クラウド同期</button>
+      <span class="sync-status2 off" id="sync-status2">オフ</span>
       <span class="backup-status" id="backup-status"></span>
+    </div>
+    <div class="menu-add-form sync-setup-form" id="sync-setup-form" hidden>
+      <p class="form-label" style="margin:0 0 8px;">クラウド同期の設定</p>
+      <p class="section-intro" style="margin:0 0 12px;">GitHubの個人アクセストークン（gist権限のみ）を使って、記録を他の端末とも共有します。トークンはこの端末にだけ保存され、外部には送信されません。</p>
+      <a class="header-link" href="https://github.com/settings/tokens/new?scopes=gist&description=MASS+PROTOCOL+sync" target="_blank" rel="noopener" style="margin-bottom:12px;display:inline-block;">gist権限だけのトークンを作成 →</a>
+      <div class="field-row">
+        <div class="field">
+          <label for="sync-token-input">トークン（ghp_で始まる文字列）</label>
+          <input type="password" id="sync-token-input" autocomplete="off" spellcheck="false">
+        </div>
+      </div>
+      <div class="menu-add-actions">
+        <button type="button" class="btn primary" id="sync-connect-btn">接続する</button>
+        <button type="button" class="link-btn" id="sync-disconnect-btn" hidden>同期を解除</button>
+        <span class="backup-status" id="sync-setup-status"></span>
+      </div>
     </div>
   </header>
 
@@ -2001,9 +2039,19 @@
   // These two helpers keep that fact visible instead of silent: a dot on the backup button
   // when there's unbacked-up data, and a recovery banner when local storage looks wiped.
   var NEEDS_BACKUP_KEY = 'atsumi-keikaku-needs-backup-v1';
+  var UPDATED_AT_KEY = 'atsumi-keikaku-updated-at-v1';
+  function touchUpdatedAt(){
+    try{ localStorage.setItem(UPDATED_AT_KEY, new Date().toISOString()); }catch(e){}
+  }
+  function loadUpdatedAt(){
+    try{ return localStorage.getItem(UPDATED_AT_KEY) || ''; }catch(e){ return ''; }
+  }
+
   function markNeedsBackup(){
     try{ localStorage.setItem(NEEDS_BACKUP_KEY, '1'); }catch(e){}
     updateBackupBadge();
+    touchUpdatedAt();
+    syncPushDebounced();
   }
   function clearNeedsBackup(){
     try{ localStorage.removeItem(NEEDS_BACKUP_KEY); }catch(e){}
@@ -2163,24 +2211,241 @@
         if(data.phase1Override !== undefined){ savePhase1Override(data.phase1Override); }
         if(data.menu){ saveMenu(mergeMenu(loadMenu(), data.menu)); }
         if(data.weightLog){ saveWeightLog(mergeWeightLogs(loadWeightLog(), data.weightLog)); }
-        renderLists();
-        renderPhaseSchedule();
-        currentChartExercise = null; // let the progress chart re-pick its default now that new data exists
-        renderProgress();
-        var profile = loadProfile();
-        var wInput = document.getElementById('p-weight');
-        var hInput = document.getElementById('p-height');
-        var aInput = document.getElementById('p-age');
-        if(wInput) wInput.value = profile.weight;
-        if(hInput) hInput.value = profile.height;
-        if(aInput) aInput.value = profile.age;
-        updateBmi();
-        updateNutritionCallout();
+        refreshAfterDataImport();
         report('復元しました', false);
         markNeedsBackup();
-        updateRecoverBanner();
       }).catch(function(){ report('読み込みに失敗しました', true); });
     });
+  }
+
+  // Shared UI refresh after any bulk data import (file restore, cloud pull):
+  // re-render everything that reads from localStorage and re-sync the
+  // profile form fields, since those aren't wired to storage-change events.
+  function refreshAfterDataImport(){
+    renderLists();
+    renderPhaseSchedule();
+    currentChartExercise = null; // let the progress chart re-pick its default now that new data exists
+    renderProgress();
+    var profile = loadProfile();
+    var wInput = document.getElementById('p-weight');
+    var hInput = document.getElementById('p-height');
+    var aInput = document.getElementById('p-age');
+    if(wInput) wInput.value = profile.weight;
+    if(hInput) hInput.value = profile.height;
+    if(aInput) aInput.value = profile.age;
+    updateBmi();
+    updateNutritionCallout();
+    updateRecoverBanner();
+  }
+
+  // ---- cloud sync via a private GitHub Gist (opt-in; localStorage stays the
+  // source of truth on this device — the gist is just a shared drop point) ----
+  var GIST_TOKEN_KEY = 'atsumi-keikaku-gist-token-v1';
+  var GIST_ID_KEY = 'atsumi-keikaku-gist-id-v1';
+  var GIST_FILENAME = 'mass-protocol-sync.json';
+  var GIST_MARKER = 'MASS PROTOCOL sync data — auto-managed, do not edit manually';
+
+  function loadGistToken(){
+    try{ return localStorage.getItem(GIST_TOKEN_KEY) || ''; }catch(e){ return ''; }
+  }
+  function saveGistToken(t){
+    try{
+      if(t){ localStorage.setItem(GIST_TOKEN_KEY, t); }
+      else { localStorage.removeItem(GIST_TOKEN_KEY); localStorage.removeItem(GIST_ID_KEY); }
+    }catch(e){}
+  }
+  function loadGistId(){
+    try{ return localStorage.getItem(GIST_ID_KEY) || ''; }catch(e){ return ''; }
+  }
+  function saveGistId(id){
+    try{ localStorage.setItem(GIST_ID_KEY, id); }catch(e){}
+  }
+
+  function gistApiHeaders(token){
+    return {'Authorization': 'token ' + token, 'Accept': 'application/vnd.github+json'};
+  }
+
+  function syncPayload(){
+    return {
+      log: loadLog(),
+      profile: loadProfile(),
+      phase1Override: loadPhase1Override(),
+      menu: loadMenu(),
+      weightLog: loadWeightLog(),
+      updatedAt: loadUpdatedAt()
+    };
+  }
+
+  // Finds the one gist this app owns (matched by its description marker) or
+  // creates it if this is the first device to ever connect.
+  function findOrCreateGist(token){
+    return fetch('https://api.github.com/gists?per_page=100', {headers: gistApiHeaders(token)})
+      .then(function(res){
+        if(!res.ok){ return Promise.reject({status: res.status}); }
+        return res.json();
+      })
+      .then(function(gists){
+        var found = gists.find(function(g){ return g.description === GIST_MARKER; });
+        if(found) return found.id;
+        var body = {description: GIST_MARKER, public: false, files: {}};
+        body.files[GIST_FILENAME] = {content: JSON.stringify(syncPayload(), null, 2)};
+        return fetch('https://api.github.com/gists', {
+          method: 'POST',
+          headers: Object.assign({'Content-Type': 'application/json'}, gistApiHeaders(token)),
+          body: JSON.stringify(body)
+        }).then(function(res){
+          if(!res.ok){ return Promise.reject({status: res.status}); }
+          return res.json();
+        }).then(function(g){ return g.id; });
+      });
+  }
+
+  function setSyncState(state, code){
+    var el = document.getElementById('sync-status2');
+    if(!el) return;
+    var cls, text;
+    if(state === 'off'){ cls = 'off'; text = 'オフ'; }
+    else if(state === 'syncing'){ cls = 'off'; text = '同期中…'; }
+    else if(state === 'ok'){
+      var t = new Date();
+      cls = 'ok';
+      text = '同期済み ' + String(t.getHours()).padStart(2, '0') + ':' + String(t.getMinutes()).padStart(2, '0');
+    } else {
+      cls = 'error';
+      text = code === 401 ? 'トークンが無効です' : '同期エラー' + (code ? '(' + code + ')' : '');
+    }
+    el.className = 'sync-status2 ' + cls;
+    el.textContent = text;
+  }
+
+  function pushToGist(){
+    var token = loadGistToken();
+    if(!token) return;
+    var id = loadGistId();
+    setSyncState('syncing');
+    function doPush(gistId){
+      var body = {files: {}};
+      body.files[GIST_FILENAME] = {content: JSON.stringify(syncPayload(), null, 2)};
+      return fetch('https://api.github.com/gists/' + gistId, {
+        method: 'PATCH',
+        headers: Object.assign({'Content-Type': 'application/json'}, gistApiHeaders(token)),
+        body: JSON.stringify(body)
+      });
+    }
+    var chain = id ? doPush(id) : findOrCreateGist(token).then(function(newId){ saveGistId(newId); return doPush(newId); });
+    chain.then(function(res){
+      if(res.status === 404 && id){
+        // the gist this device remembers was deleted elsewhere; re-discover or recreate it
+        return findOrCreateGist(token).then(function(newId){ saveGistId(newId); return doPush(newId); });
+      }
+      return res;
+    }).then(function(res){
+      if(res.ok){ setSyncState('ok'); }
+      else { setSyncState('error', res.status); }
+    }).catch(function(err){ setSyncState('error', err && err.status); });
+  }
+
+  var syncPushTimer = null;
+  function syncPushDebounced(){
+    if(!loadGistToken()) return;
+    clearTimeout(syncPushTimer);
+    syncPushTimer = setTimeout(pushToGist, 1500);
+  }
+
+  // Resolves to {ok:true} or {ok:false, status} — never rejects, so callers
+  // never need their own .catch, but can still branch on success/failure
+  // (the connect flow needs to know whether to roll back a bad token).
+  function pullFromGist(){
+    var token = loadGistToken();
+    if(!token) return Promise.resolve({ok:false});
+    setSyncState('syncing');
+    var id = loadGistId();
+    var chain = id ? Promise.resolve(id) : findOrCreateGist(token).then(function(newId){ saveGistId(newId); return newId; });
+    return chain.then(function(gistId){
+      return fetch('https://api.github.com/gists/' + gistId, {headers: gistApiHeaders(token)});
+    }).then(function(res){
+      if(!res.ok){ return Promise.reject({status: res.status}); }
+      return res.json();
+    }).then(function(g){
+      var file = g.files && g.files[GIST_FILENAME];
+      if(file && file.content){ applyRemoteSyncData(JSON.parse(file.content)); }
+      setSyncState('ok');
+      return {ok:true};
+    }).catch(function(err){
+      setSyncState('error', err && err.status);
+      return {ok:false, status: err && err.status};
+    });
+  }
+
+  // Logs and menu/weight history always merge additively (never lose a
+  // record). The single-value profile fields use last-write-wins based on
+  // whichever side has the newer updatedAt timestamp, since there's no
+  // sensible way to "merge" two different current body weights.
+  function applyRemoteSyncData(data){
+    if(data.log){ saveLog(mergeLogs(loadLog(), normalizeLog(data.log))); }
+    if(data.menu){ saveMenu(mergeMenu(loadMenu(), data.menu)); }
+    if(data.weightLog){ saveWeightLog(mergeWeightLogs(loadWeightLog(), data.weightLog)); }
+    var localUpdatedAt = loadUpdatedAt();
+    if(data.updatedAt && (!localUpdatedAt || data.updatedAt > localUpdatedAt)){
+      if(data.profile){ saveProfile(data.profile); }
+      if(data.phase1Override !== undefined){ savePhase1Override(data.phase1Override); }
+    }
+    refreshAfterDataImport();
+  }
+
+  function initSyncSetup(){
+    var toggle = document.getElementById('sync-setup-toggle');
+    var form = document.getElementById('sync-setup-form');
+    var tokenInput = document.getElementById('sync-token-input');
+    var connectBtn = document.getElementById('sync-connect-btn');
+    var disconnectBtn = document.getElementById('sync-disconnect-btn');
+    var status = document.getElementById('sync-setup-status');
+    if(!toggle || !form) return;
+
+    function report(msg, isError){
+      if(!status) return;
+      status.textContent = msg;
+      status.classList.toggle('warn', !!isError);
+      status.classList.add('show');
+      clearTimeout(status._hideTimer);
+      status._hideTimer = setTimeout(function(){ status.classList.remove('show'); }, 3200);
+    }
+    function refreshConnectedState(){
+      var connected = !!loadGistToken();
+      disconnectBtn.hidden = !connected;
+      connectBtn.textContent = connected ? 'トークンを更新' : '接続する';
+      setSyncState(connected ? 'ok' : 'off');
+    }
+
+    toggle.addEventListener('click', function(){
+      var expanded = toggle.getAttribute('aria-expanded') === 'true';
+      form.hidden = expanded;
+      toggle.setAttribute('aria-expanded', String(!expanded));
+    });
+    connectBtn.addEventListener('click', function(){
+      var token = (tokenInput.value || '').trim();
+      if(!token){ tokenInput.focus(); return; }
+      saveGistToken(token);
+      tokenInput.value = '';
+      report('接続を確認しています…', false);
+      pullFromGist().then(function(result){
+        if(!result || !result.ok){
+          saveGistToken(''); // roll back — don't leave a broken token "connected"
+          refreshConnectedState();
+          report('接続に失敗しました。トークンを確認してください', true);
+          return;
+        }
+        pushToGist();
+        report('接続しました', false);
+        refreshConnectedState();
+      });
+    });
+    disconnectBtn.addEventListener('click', function(){
+      saveGistToken('');
+      refreshConnectedState();
+      report('同期を解除しました', false);
+    });
+    refreshConnectedState();
   }
 
   function targetStr(ex){
@@ -3396,7 +3661,9 @@
   renderEquipmentLists();
   initEquipmentAdd();
   initWeightHistoryToggle();
+  initSyncSetup();
   renderProgress();
+  if(loadGistToken()){ pullFromGist(); }
 })();
 </script>
 </body>
