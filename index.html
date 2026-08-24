@@ -1,0 +1,2742 @@
+<title>MASS PROTOCOL</title>
+<meta name="description" content="ガリガリ体型からの脱却。全身法でフォームを作り、部位法で厚みを積む2段階プログラムと、メニューに直接記録できる重量トラッカー。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#f1ede2;
+    --surface:#ffffff;
+    --surface-2:#e9e2d0;
+    --border:#dcd2b8;
+    --text:#211d16;
+    --text-dim:#6e6553;
+    --accent:#b13e0d;
+    --accent-ink:#ffffff;
+    --accent-soft:#f4dcc7;
+    --accent-2:#7c5a0e;
+    --success:#2d774b;
+    --success-soft:#dcefdf;
+    --warning:#866110;
+    --warning-soft:#f3e6c4;
+    --danger:#b23b3b;
+    --danger-soft:#f6dcdc;
+    --data:#1d5fd6;
+    --data-soft:#dbe2f0;
+    --shadow: 0 1px 0 rgba(33,29,22,.04);
+    --radius: 10px;
+    --display:'Zen Kaku Gothic New', 'Hiragino Sans', 'Yu Gothic', sans-serif;
+    --mono:'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+  }
+
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#16171a;
+      --surface:#1e2023;
+      --surface-2:#26282d;
+      --border:#383b41;
+      --text:#ebe8e0;
+      --text-dim:#9a978d;
+      --accent:#ff6a2c;
+      --accent-ink:#1a0e07;
+      --accent-soft:#3a2214;
+      --accent-2:#e8b33a;
+      --success:#5cc088;
+      --success-soft:#1c3327;
+      --warning:#e8b33a;
+      --warning-soft:#3a3016;
+      --danger:#e8685f;
+      --danger-soft:#3a2020;
+      --data:#5b9dff;
+      --data-soft:#122d54;
+      --shadow: 0 1px 0 rgba(0,0,0,.3);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#16171a;
+    --surface:#1e2023;
+    --surface-2:#26282d;
+    --border:#383b41;
+    --text:#ebe8e0;
+    --text-dim:#9a978d;
+    --accent:#ff6a2c;
+    --accent-ink:#1a0e07;
+    --accent-soft:#3a2214;
+    --accent-2:#e8b33a;
+    --success:#5cc088;
+    --success-soft:#1c3327;
+    --warning:#e8b33a;
+    --warning-soft:#3a3016;
+    --danger:#e8685f;
+    --danger-soft:#3a2020;
+    --data:#5b9dff;
+    --data-soft:#122d54;
+    --shadow: 0 1px 0 rgba(0,0,0,.3);
+  }
+
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--display);
+    font-weight:500;
+    line-height:1.7;
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--accent-soft); }
+  a{ color:var(--accent); }
+  button, [role="button"], a{ touch-action:manipulation; }
+  input{ touch-action:manipulation; }
+
+  .wrap{
+    max-width:900px;
+    margin:0 auto;
+    padding:48px 24px 96px;
+  }
+
+  header.hero{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    padding-bottom:32px;
+    margin-bottom:32px;
+    border-bottom:1px solid var(--border);
+  }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:.72rem;
+    font-weight:600;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--accent);
+  }
+  h1{
+    font-family:var(--display);
+    font-weight:900;
+    font-size:clamp(2rem, 5vw, 2.6rem);
+    letter-spacing:-.01em;
+    text-wrap:balance;
+    margin:0;
+  }
+  .lede{
+    color:var(--text-dim);
+    font-size:1.02rem;
+    max-width:60ch;
+    margin:0;
+  }
+  .header-link{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    font-family:var(--mono);
+    font-size:.8rem;
+    font-weight:600;
+    color:var(--accent);
+    text-decoration:none;
+  }
+  .header-link:hover{ text-decoration:underline; text-underline-offset:2px; }
+  .data-status-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:2px;
+  }
+  .sync-status{
+    font-family:var(--mono);
+    font-size:.72rem;
+    font-weight:600;
+    padding:4px 10px;
+    border-radius:999px;
+    border:1px solid var(--border);
+    color:var(--text-dim);
+    background:var(--surface);
+  }
+  .sync-status.ok{ color:var(--success); border-color:var(--success); background:var(--success-soft); }
+  .sync-status.warn{ color:var(--warning); border-color:var(--warning); background:var(--warning-soft); }
+  .backup-btn{
+    display:inline-flex;
+    align-items:center;
+    font-family:var(--mono);
+    font-size:.72rem;
+    font-weight:600;
+    padding:4px 10px;
+    border-radius:999px;
+    border:1px solid var(--border);
+    background:var(--surface);
+    color:var(--text);
+    cursor:pointer;
+    min-height:28px;
+  }
+  .backup-btn:hover{ border-color:var(--accent); }
+  .backup-status{
+    font-family:var(--mono);
+    font-size:.72rem;
+    font-weight:600;
+    color:var(--success);
+    opacity:0;
+    transition:opacity .3s;
+  }
+  .backup-status.show{ opacity:1; }
+  .backup-status.warn{ color:var(--danger); }
+  .backup-btn.needs-backup{ border-color:var(--warning); color:var(--warning); }
+  .backup-btn.needs-backup::after{ content:''; display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--warning); margin-left:6px; }
+  .recover-banner{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    flex-wrap:wrap;
+    background:var(--warning-soft);
+    border:1px solid var(--warning);
+    border-radius:var(--radius);
+    padding:14px 16px;
+    margin:0 0 28px;
+  }
+  .recover-banner-text{ color:var(--text); font-size:.92rem; line-height:1.6; }
+  .recover-banner-text b{ display:block; font-weight:700; margin-bottom:2px; }
+  .recover-banner-actions{ display:flex; align-items:center; gap:10px; flex-shrink:0; }
+  .recover-banner .backup-btn{ background:var(--surface); }
+  .recover-dismiss{
+    font-family:var(--mono);
+    font-size:.72rem;
+    color:var(--text-dim);
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:4px;
+  }
+  .profile-strip{
+    display:flex;
+    gap:22px;
+    flex-wrap:wrap;
+    margin-top:2px;
+  }
+  .stat-field{ display:flex; flex-direction:column; gap:4px; }
+  .stat-field label{
+    font-family:var(--mono);
+    font-size:.64rem;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    font-weight:600;
+  }
+  .stat-input-wrap{ display:flex; align-items:baseline; gap:3px; }
+  .stat-input-wrap input{
+    width:52px;
+    font-family:var(--mono);
+    font-size:1.05rem;
+    font-weight:700;
+    color:var(--text);
+    background:none;
+    border:none;
+    border-bottom:1px solid var(--border);
+    padding:5px 0;
+    font-variant-numeric:tabular-nums;
+  }
+  .stat-input-wrap input:focus{ outline:none; border-bottom-color:var(--accent); }
+  .stat-input-wrap .unit{ font-family:var(--mono); font-size:.72rem; color:var(--text-dim); }
+  .stat-readout{
+    font-family:var(--mono);
+    font-size:1.05rem;
+    font-weight:700;
+    color:var(--text);
+    font-variant-numeric:tabular-nums;
+  }
+  section{ margin-bottom:44px; }
+  h2{
+    font-family:var(--display);
+    font-weight:900;
+    font-size:1.15rem;
+    letter-spacing:-.005em;
+    margin:0 0 4px;
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+  h2 .num{
+    font-family:var(--mono);
+    font-size:.85rem;
+    color:var(--accent);
+    font-weight:600;
+  }
+  .section-intro{
+    color:var(--text-dim);
+    font-size:.94rem;
+    margin:0 0 18px;
+    max-width:64ch;
+  }
+
+  .usage-toggle{ margin-bottom:14px; }
+  .usage-panel{
+    margin:-6px 0 16px;
+    padding:12px 14px;
+    background:var(--surface-2);
+    border-radius:8px;
+    font-size:.82rem;
+    color:var(--text-dim);
+    max-width:64ch;
+  }
+  .usage-panel[hidden]{ display:none; }
+  .usage-panel ul{ margin:0; padding-left:18px; }
+  .usage-panel li{ margin-bottom:4px; }
+  .usage-panel li:last-child{ margin-bottom:0; }
+  .mini-chart-label{ margin:0 0 10px; }
+
+  /* Phase timeline */
+  .timeline{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;
+    gap:12px;
+    margin-bottom:44px;
+  }
+  .phase-node{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:16px 18px;
+    box-shadow:var(--shadow);
+  }
+  .phase-node .ph-label{
+    font-family:var(--mono);
+    font-size:.68rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+  }
+  .phase-node .ph-title{
+    font-weight:900;
+    font-size:1.05rem;
+    margin-top:3px;
+  }
+  .phase-node .ph-sub{
+    font-size:.82rem;
+    color:var(--text-dim);
+    margin-top:2px;
+  }
+  .ph-sub-row{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:8px;
+  }
+  .ph-sub-row .ph-sub{ margin-top:2px; }
+  .icon-btn{
+    background:none;
+    border:none;
+    color:var(--text-dim);
+    font-size:.82rem;
+    cursor:pointer;
+    padding:6px;
+    margin:-4px -6px 0 0;
+    border-radius:6px;
+    flex:none;
+    line-height:1;
+  }
+  .icon-btn:hover{ color:var(--accent); }
+  .phase-edit{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-top:10px;
+    padding-top:10px;
+    border-top:1px dashed var(--border);
+  }
+  .phase-edit[hidden]{ display:none; }
+  .phase-edit label{
+    font-family:var(--mono);
+    font-size:.66rem;
+    letter-spacing:.04em;
+    color:var(--text-dim);
+  }
+  .phase-edit input[type="date"]{
+    font-family:var(--mono);
+    font-size:16px;
+    padding:6px 8px;
+    border-radius:6px;
+    border:1px solid var(--border);
+    background:var(--bg);
+    color:var(--text);
+  }
+  .link-btn{
+    background:none;
+    border:none;
+    padding:6px 2px;
+    margin:-6px -2px;
+    font-family:var(--mono);
+    font-size:.72rem;
+    color:var(--accent);
+    text-decoration:underline;
+    text-underline-offset:2px;
+    cursor:pointer;
+  }
+  .link-btn:hover{ color:var(--accent-2); }
+  .timeline .arrow{
+    color:var(--border);
+    font-size:1.4rem;
+  }
+  @media (max-width:560px){
+    .timeline{ grid-template-columns:1fr; }
+    .timeline .arrow{ display:none; }
+  }
+
+  /* Day tabs */
+  .tabbar{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+    margin-bottom:18px;
+    border-bottom:1px solid var(--border);
+    padding-bottom:0;
+  }
+  .tabbar{
+    position:sticky;
+    top:0;
+    z-index:5;
+    background:var(--bg);
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+  }
+  .tabbar button{
+    font-family:var(--display);
+    font-weight:700;
+    font-size:.88rem;
+    background:none;
+    border:none;
+    color:var(--text-dim);
+    padding:13px 8px;
+    margin-right:10px;
+    cursor:pointer;
+    border-bottom:2px solid transparent;
+    transform:translateY(1px);
+    min-height:44px;
+  }
+  .tabbar button:hover{ color:var(--text); }
+  .tabbar button.active{
+    color:var(--text);
+    border-bottom-color:var(--accent);
+  }
+  .tabbar button:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+  .day-panel{ display:none; }
+  .day-panel.active{ display:block; }
+  .day-aim{
+    font-size:.86rem;
+    color:var(--text-dim);
+    margin:0 0 16px;
+  }
+  .day-aim b{ color:var(--text); }
+
+  /* per-day toolbar: date + save-all */
+  .day-toolbar{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:14px;
+    flex-wrap:wrap;
+    margin-bottom:14px;
+  }
+  .day-toolbar .date-field label{
+    display:block;
+    font-family:var(--mono);
+    font-size:.66rem;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    margin-bottom:5px;
+    font-weight:600;
+  }
+  .day-toolbar input[type="date"]{
+    font-family:var(--mono);
+    font-size:16px;
+    padding:9px 10px;
+    border-radius:7px;
+    border:1px solid var(--border);
+    background:var(--surface);
+    color:var(--text);
+    min-height:44px;
+  }
+  .toolbar-actions{ display:flex; align-items:center; gap:12px; }
+  .save-status{
+    font-family:var(--mono);
+    font-size:.76rem;
+    color:var(--success);
+    opacity:0;
+    transition:opacity .3s;
+  }
+  .save-status.show{ opacity:1; }
+
+  @media (max-width:480px){
+    .day-toolbar{ flex-direction:column; align-items:stretch; }
+    .toolbar-actions{ flex-direction:column-reverse; align-items:stretch; gap:8px; }
+    .toolbar-actions button.btn.primary{ width:100%; }
+    .save-status{ text-align:center; }
+  }
+
+  button.btn{
+    font-family:var(--display);
+    font-weight:700;
+    font-size:.9rem;
+    padding:12px 18px;
+    border-radius:7px;
+    border:1px solid var(--border);
+    background:var(--surface-2);
+    color:var(--text);
+    cursor:pointer;
+    min-height:44px;
+  }
+  button.btn:hover{ border-color:var(--text-dim); }
+  button.btn.primary{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:var(--accent-ink);
+  }
+  button.btn:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+  .ex-list{
+    display:flex;
+    flex-direction:column;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    overflow:hidden;
+    background:var(--surface);
+  }
+  .ex-row{
+    padding:14px 16px;
+    border-bottom:1px solid var(--border);
+  }
+  .ex-row:last-child{ border-bottom:none; }
+  .ex-row.main{ background:var(--accent-soft); }
+
+  .ex-row-top{
+    display:grid;
+    grid-template-columns:90px 1fr auto;
+    grid-template-areas:"icon info target";
+    gap:14px;
+    align-items:start;
+    cursor:pointer;
+    border-radius:6px;
+    padding:4px;
+    margin:-4px;
+  }
+  .ex-row-top:hover{ opacity:.82; }
+  .ex-row-top:focus-visible{ outline:2px solid var(--accent); outline-offset:3px; }
+  .ex-icon{ grid-area:icon; }
+  .ex-info{ grid-area:info; min-width:0; }
+  .ex-target-wrap{ grid-area:target; display:flex; align-items:center; gap:6px; }
+  .chevron{
+    font-size:.7rem;
+    color:var(--text-dim);
+    line-height:1;
+    flex:none;
+    padding:6px;
+    margin:-6px;
+  }
+
+  @media (max-width:480px){
+    .ex-row-top{
+      grid-template-columns:68px 1fr;
+      grid-template-areas:
+        "icon info"
+        "target target";
+      row-gap:8px;
+      column-gap:12px;
+    }
+    .ex-target-wrap{ justify-content:space-between; }
+    .ex-target{ text-align:left; }
+  }
+
+  .form-panel{
+    margin-top:12px;
+    margin-left:104px;
+    padding:14px 16px;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:8px;
+    font-size:.86rem;
+  }
+  .ex-row.main .form-panel{ background:var(--surface); }
+  .form-panel[hidden]{ display:none; }
+  .form-block{ margin-bottom:10px; }
+  .form-block:last-child{ margin-bottom:0; }
+  .form-label{
+    display:block;
+    font-family:var(--mono);
+    font-size:.64rem;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--accent-2);
+    font-weight:700;
+    margin-bottom:4px;
+  }
+  .form-block p{ margin:0; color:var(--text); }
+  .form-block ol, .form-block ul{ margin:0; padding-left:18px; color:var(--text); }
+  .form-block li{ margin-bottom:3px; }
+  .form-block li:last-child{ margin-bottom:0; }
+  .video-link{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    margin-top:9px;
+    font-family:var(--mono);
+    font-size:.78rem;
+    font-weight:600;
+    color:var(--accent);
+    text-decoration:none;
+  }
+  .video-link:hover{ text-decoration:underline; text-underline-offset:2px; }
+  @media (max-width:520px){ .form-panel{ margin-left:0; } }
+
+  .ex-icon{
+    position:relative;
+    width:90px;
+    height:72px;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:8px;
+    flex:none;
+  }
+  .ex-row.main .ex-icon{ background:var(--surface); border-color:var(--accent-2); }
+  .ex-icon svg{ width:100%; height:100%; display:block; }
+  .ex-icon svg .bone{ fill:none; stroke:var(--text-dim); stroke-width:11; stroke-linecap:round; stroke-linejoin:round; }
+  .ex-icon svg .bone-hl{ stroke:var(--accent); }
+  .ex-icon svg .joint{ fill:var(--text-dim); }
+  .ex-icon svg .joint-hl{ fill:var(--accent); }
+  .ex-icon svg .head-fill{ fill:var(--text-dim); stroke:none; }
+  .ex-icon svg .pp-rect{ fill:none; stroke:var(--text-dim); stroke-width:3; }
+  .ex-icon svg .pp-line{ stroke:var(--text-dim); stroke-width:3; stroke-linecap:round; }
+  .ex-icon svg .pp-circle{ fill:var(--text-dim); }
+  .ex-icon svg .pg{ stroke:var(--border); stroke-width:3; }
+  @media (max-width:480px){
+    .ex-icon{ width:68px; height:54px; }
+  }
+  .ex-num-badge{
+    position:absolute; top:-8px; left:-8px;
+    background:var(--surface); border:1px solid var(--border);
+    color:var(--text-dim); font-family:var(--mono); font-weight:700; font-size:.66rem;
+    width:20px; height:20px; border-radius:5px;
+    display:flex; align-items:center; justify-content:center;
+    line-height:1;
+  }
+
+  .ex-name{
+    font-weight:700;
+    font-size:.98rem;
+  }
+  .ex-note{
+    display:block;
+    font-weight:500;
+    font-size:.8rem;
+    color:var(--text-dim);
+    margin-top:2px;
+  }
+  .ex-row.main .ex-note{ color:var(--accent-2); }
+  .ex-target{
+    font-family:var(--mono);
+    font-variant-numeric:tabular-nums;
+    font-size:.86rem;
+    font-weight:600;
+    color:var(--text);
+    white-space:nowrap;
+    text-align:right;
+  }
+  .ex-target .inc{
+    display:block;
+    font-size:.72rem;
+    font-weight:500;
+    color:var(--text-dim);
+  }
+  .main-tag{
+    display:inline-block;
+    font-family:var(--mono);
+    font-size:.62rem;
+    letter-spacing:.08em;
+    font-weight:700;
+    color:var(--accent-ink);
+    background:var(--accent);
+    padding:1px 6px;
+    border-radius:4px;
+    margin-right:7px;
+    transform:translateY(-1px);
+  }
+
+  .muscle-tags{
+    display:flex;
+    gap:5px;
+    flex-wrap:wrap;
+    margin-top:7px;
+  }
+  .muscle-tag{
+    font-family:var(--mono);
+    font-size:.66rem;
+    font-weight:600;
+    padding:2px 8px;
+    border-radius:999px;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    color:var(--text-dim);
+    white-space:nowrap;
+  }
+  .muscle-tag.primary{
+    background:var(--accent-soft);
+    border-color:var(--accent-2);
+    color:var(--accent-2);
+  }
+
+  /* inline logging */
+  .ex-log{
+    margin-top:12px;
+    padding-left:104px;
+  }
+  @media (max-width:520px){ .ex-log{ padding-left:0; } }
+  .set-inputs{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    margin-bottom:8px;
+  }
+  .set-unit{ display:flex; flex-direction:column; gap:4px; }
+  .set-unit .set-label{
+    font-family:var(--mono);
+    font-size:.66rem;
+    color:var(--text-dim);
+    letter-spacing:.04em;
+  }
+  .set-unit .fields{ display:flex; gap:5px; }
+  .set-unit input{
+    width:64px;
+    font-family:var(--mono);
+    font-size:16px;
+    padding:9px 7px;
+    border-radius:6px;
+    border:1px solid var(--border);
+    background:var(--bg);
+    color:var(--text);
+    font-variant-numeric:tabular-nums;
+    min-height:40px;
+  }
+  .set-unit input:focus{ outline:2px solid var(--accent); outline-offset:1px; }
+  .set-unit input::placeholder{ color:var(--text-dim); opacity:.6; }
+
+  .set-select{
+    font-family:var(--mono);
+    font-size:16px;
+    font-weight:700;
+    padding:9px 8px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:var(--bg);
+    color:var(--text);
+    min-height:40px;
+    min-width:78px;
+    font-variant-numeric:tabular-nums;
+    text-align:center;
+    text-align-last:center;
+  }
+  .set-select:focus{ outline:2px solid var(--accent); outline-offset:1px; }
+
+  .ex-suggestion{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:.8rem;
+    color:var(--text-dim);
+    margin-bottom:6px;
+  }
+  .chip{
+    font-family:var(--mono);
+    font-size:.66rem;
+    font-weight:700;
+    padding:3px 8px;
+    border-radius:999px;
+    white-space:nowrap;
+    flex:none;
+  }
+  .chip.up{ background:var(--success-soft); color:var(--success); }
+  .chip.warn{ background:var(--warning-soft); color:var(--warning); }
+  .chip.hold{ background:var(--accent-soft); color:var(--accent-2); }
+  .chip.neutral{ background:var(--border); color:var(--text-dim); }
+
+  .history-toggle{
+    background:none;
+    border:none;
+    padding:8px 2px;
+    margin:-8px -2px;
+    font-family:var(--mono);
+    font-size:.72rem;
+    color:var(--text-dim);
+    text-decoration:underline;
+    text-underline-offset:2px;
+    cursor:pointer;
+    display:inline-block;
+  }
+  .history-toggle:hover{ color:var(--text); }
+  .history-panel{ margin-top:8px; }
+  .history-panel[hidden]{ display:none; }
+
+  table.history{
+    width:100%;
+    border-collapse:collapse;
+    font-size:.8rem;
+  }
+  table.history th{
+    text-align:left;
+    font-family:var(--mono);
+    font-size:.64rem;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    font-weight:600;
+    padding:5px 8px;
+    border-bottom:1px solid var(--border);
+  }
+  table.history td{
+    padding:6px 8px;
+    border-bottom:1px solid var(--border);
+    font-family:var(--mono);
+    font-variant-numeric:tabular-nums;
+    color:var(--text);
+  }
+  .history-wrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+  .empty-history{ color:var(--text-dim); font-size:.8rem; padding:4px 0; }
+  table.history td.del-cell{ width:1%; text-align:right; }
+  .delete-entry{
+    background:none;
+    border:none;
+    color:var(--text-dim);
+    font-family:var(--mono);
+    font-size:.85rem;
+    cursor:pointer;
+    padding:6px 8px;
+    margin:-6px -8px;
+  }
+  .delete-entry:hover{ color:var(--danger); }
+  .delete-entry.confirming{ color:var(--danger); font-weight:700; white-space:nowrap; }
+
+  .callout{
+    border:1px solid var(--border);
+    border-left:3px solid var(--accent-2);
+    background:var(--surface);
+    border-radius:0 var(--radius) var(--radius) 0;
+    padding:14px 18px;
+    margin-top:16px;
+    font-size:.88rem;
+    color:var(--text-dim);
+  }
+  .callout b{ color:var(--text); }
+  .callout .c-label{
+    font-family:var(--mono);
+    font-size:.68rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--accent-2);
+    display:block;
+    margin-bottom:5px;
+    font-weight:700;
+  }
+
+  .card-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+  }
+  @media (max-width:600px){ .card-grid{ grid-template-columns:1fr; } }
+  .info-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:16px 18px;
+  }
+  .info-card .ic-title{
+    font-weight:700;
+    font-size:.9rem;
+    margin-bottom:6px;
+  }
+  .info-card p{
+    font-size:.84rem;
+    color:var(--text-dim);
+    margin:0;
+  }
+  .info-card .ic-step{
+    font-family:var(--mono);
+    font-size:.68rem;
+    color:var(--accent);
+    font-weight:700;
+    letter-spacing:.08em;
+  }
+
+  footer{
+    margin-top:56px;
+    padding-top:20px;
+    border-top:1px solid var(--border);
+    font-size:.78rem;
+    color:var(--text-dim);
+  }
+  footer a{ color:var(--text-dim); text-decoration:underline; text-underline-offset:2px; }
+
+  /* ---- progress tab ---- */
+  .tab-progress{ color:var(--accent-2); }
+  .tabbar button.tab-progress.active{ color:var(--text); border-bottom-color:var(--accent); }
+
+  .progress-stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));
+    gap:12px;
+    margin-bottom:16px;
+  }
+  .stat-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:14px 16px;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .stat-card-label{
+    font-family:var(--mono);
+    font-size:.64rem;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    font-weight:600;
+  }
+  .stat-card-value{
+    font-family:var(--mono);
+    font-size:1.3rem;
+    font-weight:700;
+    color:var(--text);
+    font-variant-numeric:tabular-nums;
+  }
+
+  .week-tracker{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:14px 16px;
+    margin-bottom:20px;
+  }
+  .week-tracker-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:10px;
+  }
+  .week-count{
+    font-family:var(--mono);
+    font-weight:700;
+    font-size:.86rem;
+    color:var(--text);
+    font-variant-numeric:tabular-nums;
+  }
+  .week-dots{ display:flex; gap:10px; }
+  .week-dot{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:5px;
+    padding:10px 4px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:var(--surface-2);
+  }
+  .week-dot .wd-label{
+    font-family:var(--mono);
+    font-size:.7rem;
+    color:var(--text-dim);
+    font-weight:700;
+  }
+  .week-dot .wd-mark{
+    font-size:.95rem;
+    font-weight:700;
+    color:var(--text-dim);
+    line-height:1;
+  }
+  .week-dot.done{ background:var(--success-soft); border-color:var(--success); }
+  .week-dot.done .wd-mark, .week-dot.done .wd-label{ color:var(--success); }
+  .week-dot.today{ border-color:var(--accent); }
+  .week-dot.today .wd-label{ color:var(--accent); }
+  .week-dot.missed{ opacity:.55; }
+
+  .chart-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:18px;
+    margin-bottom:20px;
+  }
+  .chart-card-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    gap:14px;
+    margin-bottom:14px;
+  }
+  .chart-select-wrap{ display:flex; flex-direction:column; gap:5px; }
+  .chart-select-wrap select{
+    font-family:var(--display);
+    font-weight:700;
+    font-size:.95rem;
+    padding:9px 10px;
+    border-radius:7px;
+    border:1px solid var(--border);
+    background:var(--bg);
+    color:var(--text);
+    min-height:44px;
+  }
+  .chart-summary{ display:flex; align-items:center; gap:10px; }
+  .chart-current{ display:flex; flex-direction:column; align-items:flex-end; }
+  .chart-current-value{
+    font-family:var(--mono);
+    font-size:1.5rem;
+    font-weight:700;
+    color:var(--text);
+    font-variant-numeric:tabular-nums;
+    line-height:1.1;
+  }
+  .chart-current-label{
+    font-family:var(--mono);
+    font-size:.62rem;
+    color:var(--text-dim);
+    text-transform:uppercase;
+    letter-spacing:.06em;
+  }
+  .chart-summary-empty{
+    font-family:var(--mono);
+    font-size:.8rem;
+    color:var(--text-dim);
+  }
+  .chart-wrap{ width:100%; }
+  .chart-svg{ width:100%; height:auto; display:block; }
+  .chart-grid{ stroke:var(--border); stroke-width:1; }
+  .chart-area{ fill:var(--data-soft); stroke:none; opacity:.85; }
+  .chart-line{ fill:none; stroke:var(--data); stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
+  .chart-dot{ fill:var(--data); stroke:var(--surface); stroke-width:2; }
+  .chart-axis-label{ font-family:var(--mono); font-size:9px; fill:var(--text-dim); }
+  .chart-empty-label{ font-family:var(--display); font-size:12px; fill:var(--text-dim); }
+  .chart-single-label{ font-family:var(--mono); font-size:11px; font-weight:700; fill:var(--text); }
+
+  .mini-chart-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));
+    gap:12px;
+  }
+  .mini-chart-card{
+    text-align:left;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:12px 14px;
+    cursor:pointer;
+    font-family:inherit;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    min-height:44px;
+  }
+  .mini-chart-card:hover{ border-color:var(--accent-2); }
+  .mini-chart-card.active{ border-color:var(--accent); background:var(--accent-soft); }
+  .mini-chart-card:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+  .mini-chart-head{ display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+  .mini-chart-name{ font-weight:700; font-size:.86rem; }
+  .mini-chart-delta{
+    font-family:var(--mono);
+    font-size:.7rem;
+    font-weight:700;
+    color:var(--text-dim);
+    white-space:nowrap;
+  }
+  .mini-chart-delta.up{ color:var(--success); }
+  .mini-chart-delta.down{ color:var(--danger); }
+  .mini-chart-svg svg{ width:100%; height:36px; display:block; }
+  .mini-chart-current{
+    font-family:var(--mono);
+    font-size:.78rem;
+    color:var(--text-dim);
+    font-variant-numeric:tabular-nums;
+  }
+
+  .pr-toast{
+    position:fixed;
+    left:50%;
+    bottom:24px;
+    transform:translate(-50%, 16px);
+    opacity:0;
+    background:var(--accent);
+    color:var(--accent-ink);
+    padding:13px 22px;
+    border-radius:999px;
+    font-family:var(--display);
+    font-weight:700;
+    font-size:.86rem;
+    box-shadow:0 10px 28px rgba(0,0,0,.28);
+    pointer-events:none;
+    transition:opacity .25s, transform .25s;
+    z-index:50;
+    max-width:90vw;
+    text-align:center;
+  }
+  .pr-toast.show{ opacity:1; transform:translate(-50%, 0); }
+
+  @media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important; } }
+</style>
+
+<div class="wrap">
+
+  <header class="hero">
+    <span class="eyebrow">Training Program — 月 / 水 / 金</span>
+    <h1>MASS PROTOCOL</h1>
+    <p class="lede">週3日、全身法でフォームを作り、部位法で厚みを積む。</p>
+    <div class="profile-strip">
+      <div class="stat-field">
+        <label for="p-weight">体重</label>
+        <span class="stat-input-wrap"><input type="number" id="p-weight" step="0.1" min="0"><span class="unit">kg</span></span>
+      </div>
+      <div class="stat-field">
+        <label for="p-height">身長</label>
+        <span class="stat-input-wrap"><input type="number" id="p-height" step="0.1" min="0"><span class="unit">cm</span></span>
+      </div>
+      <div class="stat-field">
+        <label for="p-age">年齢</label>
+        <span class="stat-input-wrap"><input type="number" id="p-age" step="1" min="0"><span class="unit">歳</span></span>
+      </div>
+      <div class="stat-field">
+        <label>BMI</label>
+        <span class="stat-readout" id="p-bmi">—</span>
+      </div>
+      <div class="stat-field">
+        <label>目標たんぱく質</label>
+        <span class="stat-readout" id="p-protein">—</span>
+      </div>
+    </div>
+    <a class="header-link" href="https://claude.ai/code/artifact/2e7e3f7c-bb1f-4724-9d32-e64e85eed4b5" target="_blank" rel="noopener">設備リファレンス →</a>
+    <div class="data-status-row">
+      <span class="sync-status neutral" id="sync-status">☁️ 未同期</span>
+      <button type="button" class="backup-btn" id="backup-btn">📥 バックアップを保存</button>
+      <label class="backup-btn" for="restore-input">📤 バックアップから復元</label>
+      <input type="file" id="restore-input" accept="application/json,.json" hidden>
+      <span class="backup-status" id="backup-status"></span>
+    </div>
+  </header>
+
+  <div class="recover-banner" id="recover-banner" hidden>
+    <div class="recover-banner-text">
+      <b>この端末に記録データが見つかりません</b>
+      バックアップファイルがあれば、ここから復元できます。
+    </div>
+    <div class="recover-banner-actions">
+      <label class="backup-btn" for="restore-input">📤 バックアップから復元</label>
+      <button type="button" class="recover-dismiss" id="recover-dismiss">新規に始める</button>
+    </div>
+  </div>
+
+  <div class="timeline">
+    <div class="phase-node">
+      <div class="ph-label">Phase 1 · 1〜2ヶ月目</div>
+      <div class="ph-title">全身法</div>
+      <div class="ph-sub-row">
+        <div class="ph-sub" id="phase1-sub">週3回、同じ8種目で体の扱い方を学ぶ</div>
+        <button type="button" class="icon-btn" id="phase1-edit-toggle" aria-label="開始日を修正" aria-expanded="false">✎</button>
+      </div>
+      <div class="phase-edit" id="phase1-edit-row" hidden>
+        <label for="phase1-start-input">開始日</label>
+        <input type="date" id="phase1-start-input">
+        <button type="button" class="link-btn" id="phase1-reset">自動計算に戻す</button>
+      </div>
+    </div>
+    <div class="arrow">→</div>
+    <div class="phase-node">
+      <div class="ph-label">Phase 2 · 3ヶ月目〜</div>
+      <div class="ph-title">部位法（胸・背中・脚）</div>
+      <div class="ph-sub" id="phase2-sub">月:胸 / 水:背中 / 金:脚</div>
+    </div>
+  </div>
+
+  <section>
+    <h2><span class="num">01</span>メニュー & 記録</h2>
+    <button type="button" class="link-btn usage-toggle" id="usage-toggle" aria-expanded="false">使い方を見る</button>
+    <div class="usage-panel" id="usage-panel" hidden>
+      <ul>
+        <li>種目名をタップすると、セットポジション・動作の流れ・フォームのポイントが開きます。</li>
+        <li>記録を間違えたら、種目を開いて「履歴を見る」から個別に削除できます。</li>
+      </ul>
+    </div>
+
+    <div class="tabbar" role="tablist" aria-label="トレーニング日">
+      <button class="active" data-day="full" role="tab" aria-selected="true">全身法</button>
+      <button data-day="chest" role="tab" aria-selected="false">胸の日</button>
+      <button data-day="back" role="tab" aria-selected="false">背中の日</button>
+      <button data-day="leg" role="tab" aria-selected="false">脚の日</button>
+      <button data-day="progress" role="tab" aria-selected="false" class="tab-progress">📈 進捗</button>
+    </div>
+
+    <div id="panel-full" class="day-panel active">
+      <p class="day-aim">狙い: <b>全身の主要な動作パターンを学習</b>／週3回とも同一メニュー</p>
+      <div class="day-toolbar">
+        <div class="date-field">
+          <label for="date-full">記録日</label>
+          <input type="date" id="date-full" data-day="full">
+        </div>
+        <div class="toolbar-actions">
+          <span class="sync-status neutral">☁️ 未同期</span>
+          <span class="save-status" id="status-full">保存しました</span>
+          <button class="btn primary" data-save="full">この日の記録を保存</button>
+        </div>
+      </div>
+      <div class="ex-list" data-list="full"></div>
+      <div class="callout">
+        <span class="c-label">ポイント</span>
+        アブローラーはセットアップとして軽めに。追い込みすぎるとこのあとのスクワット・ベンチプレスに響くので、余力を残して切り上げましょう。
+      </div>
+    </div>
+
+    <div id="panel-chest" class="day-panel">
+      <p class="day-aim">狙い: <b>胸 &gt; 三頭 &gt; 肩</b>／ベンチプレス→インクライン→ダンベルフライの流れを軸に、胸を最優先</p>
+      <div class="day-toolbar">
+        <div class="date-field">
+          <label for="date-chest">記録日</label>
+          <input type="date" id="date-chest" data-day="chest">
+        </div>
+        <div class="toolbar-actions">
+          <span class="sync-status neutral">☁️ 未同期</span>
+          <span class="save-status" id="status-chest">保存しました</span>
+          <button class="btn primary" data-save="chest">この日の記録を保存</button>
+        </div>
+      </div>
+      <div class="ex-list" data-list="chest"></div>
+      <div class="callout">
+        <span class="c-label">ポイント</span>
+        プレス種目が多く肩の前面に負荷が集中しやすい配分です。肩の張りや痛みを感じたら、余力のある週に背中の日でリアレイズかケーブルフェイスプルを1種目加えてバランスを取りましょう（設備リファレンス参照）。
+      </div>
+    </div>
+
+    <div id="panel-back" class="day-panel">
+      <p class="day-aim">狙い: <b>背中 &gt; 二頭</b>／懸垂を最初、デッドリフトは2番目に固定</p>
+      <div class="day-toolbar">
+        <div class="date-field">
+          <label for="date-back">記録日</label>
+          <input type="date" id="date-back" data-day="back">
+        </div>
+        <div class="toolbar-actions">
+          <span class="sync-status neutral">☁️ 未同期</span>
+          <span class="save-status" id="status-back">保存しました</span>
+          <button class="btn primary" data-save="back">この日の記録を保存</button>
+        </div>
+      </div>
+      <div class="ex-list" data-list="back"></div>
+      <div class="callout">
+        <span class="c-label">ポイント</span>
+        デッドリフトはグリップと下背部の消耗がフォームに直結する種目です。懸垂の直後・他の種目より前に行い、フレッシュな状態で扱う順番を崩さないようにしましょう。握力が先に落ちてきたら、フックグリップやストラップの使用も検討してください。
+      </div>
+    </div>
+
+    <div id="panel-leg" class="day-panel">
+      <p class="day-aim">狙い: <b>脚 &gt; 肩</b>／スクワットを起点に、脚と腰まわりのボリュームを確保</p>
+      <div class="day-toolbar">
+        <div class="date-field">
+          <label for="date-leg">記録日</label>
+          <input type="date" id="date-leg" data-day="leg">
+        </div>
+        <div class="toolbar-actions">
+          <span class="sync-status neutral">☁️ 未同期</span>
+          <span class="save-status" id="status-leg">保存しました</span>
+          <button class="btn primary" data-save="leg">この日の記録を保存</button>
+        </div>
+      </div>
+      <div class="ex-list" data-list="leg"></div>
+      <div class="callout">
+        <span class="c-label">ポイント</span>
+        スクワットで疲労が大きい日は、レッグプレスやレッグカールの重量が伸び悩むことがあります。順番通り消化できていれば問題ありません。全種目で無理に自己ベストを狙う必要はありません。
+      </div>
+      <div class="callout">
+        <span class="c-label">なぜ肩と組むのか</span>
+        脚と肩は使う筋肉がほとんど重ならず、回復の面で競合しない組み合わせです。週3分割では「脚+肩」は定番の型の一つです。このプログラムでは胸の日にベンチプレス系で三角筋前部（肩の前側）をすでにかなり使っているため、肩トレーニングを胸の日に足さず脚の日にまとめることで、同じ筋肉を週の中で連続して酷使せず、肩を疲労の少ない状態で鍛えられます。
+      </div>
+    </div>
+
+    <div id="panel-progress" class="day-panel">
+      <p class="day-aim">狙い: <b>記録の推移を可視化してモチベーションを維持</b></p>
+
+      <div class="progress-stats" id="progress-stats"></div>
+      <div class="week-tracker" id="week-tracker"></div>
+
+      <div class="chart-card">
+        <div class="chart-card-head">
+          <div class="chart-select-wrap">
+            <label for="chart-exercise-select" class="form-label">種目を選ぶ</label>
+            <select id="chart-exercise-select"></select>
+          </div>
+          <div class="chart-summary" id="chart-summary"></div>
+        </div>
+        <div class="chart-wrap" id="chart-wrap"></div>
+      </div>
+
+      <p class="form-label mini-chart-label">主要種目</p>
+      <div class="mini-chart-grid" id="mini-chart-grid"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>重量の伸ばし方（ダブルプログレッション）</h2>
+    <p class="section-intro">「何kgに増やすか」を毎回考えなくて済むように、シンプルな1本のルールに統一します。上のメニューの各種目にも、このルールに沿った次回の目安が自動で表示されます。</p>
+    <div class="card-grid">
+      <div class="info-card">
+        <div class="ic-step">Step 1</div>
+        <div class="ic-title">レップ上限まで届いたら重量アップ</div>
+        <p>全セットで目標レップ範囲の上限（例: 3×6〜10なら10回）に到達したら、次回は重量を1段階（種目により1.25〜5kg）増やし、レップ範囲の下限からやり直す。</p>
+      </div>
+      <div class="info-card">
+        <div class="ic-step">Step 2</div>
+        <div class="ic-title">下限に届かなければ据え置き</div>
+        <p>下限レップに届かないセットがあれば、次回も同じ重量でフォームを崩さず下限到達を狙う。無理に重量を上げない。</p>
+      </div>
+      <div class="info-card">
+        <div class="ic-step">Step 3</div>
+        <div class="ic-title">本番セット前にウォームアップ</div>
+        <p>スクワット・ベンチプレス・デッドリフトは、アブローラーだけでなく本番重量の前に軽い重量で2〜3セットの漸増ウォームアップを挟むと安全です。</p>
+      </div>
+      <div class="info-card">
+        <div class="ic-step">Step 4</div>
+        <div class="ic-title">6〜8週に1回は軽くする週を</div>
+        <p>特に部位法に入ってからは疲労が蓄積するので、6〜8週ごとにセット数か重量を1〜2割落とす「軽い週」を入れると怪我予防と伸び続けやすさに繋がります。</p>
+      </div>
+    </div>
+    <div class="callout">
+      <span class="c-label">見た目の変化について</span>
+      「厚みを出す」ゴールはメニューだけでなく食事の影響が大きいです。体重が増えていなければ、まずは<b><span id="protein-range">—</span>のたんぱく質</b>（体重×1.6〜2.2g）と、少しの摂取カロリー増（体重が週0.2〜0.4kg程度ずつ増えるくらい）を優先してください。上のプロフィールの体重を更新すると、この数値も自動で更新されます。必要であれば食事管理のたたき台も作れます。
+    </div>
+  </section>
+
+  <footer>
+    MASS PROTOCOL — 2026年8月作成。参考: 山岸秀匡氏の解説動画3本（初心者向けフリーウエイト/マシン論、種目順、部位分割の考え方）を土台に、既存の暫定メニューと施設の設備一覧に合わせて調整。記録データは保存のたびにこのページ自体に同期され、スマホ・PCなどどの端末から開いても同じ記録が反映されます（オフライン時はその端末に一時保存され、次にオンラインで保存した時に同期されます）。設備の詳細は<a href="https://claude.ai/code/artifact/2e7e3f7c-bb1f-4724-9d32-e64e85eed4b5" target="_blank" rel="noopener">設備リファレンス</a>を参照。
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---- pose/muscle illustrations ----
+  // Solid "Olympic pictogram" style: thick round-capped bones instead of thin
+  // stick lines, so limbs read as filled body segments. viewBox 0 0 180 144.
+  // Every pose still shares the SAME fixed bone lengths (head r9, neck 6,
+  // torso 36, upper-arm 21, forearm 19.5, thigh 24, shin 24) so only the pose
+  // (joint angles) changes between icons, not the proportions of the figure.
+  // Each pose lists named bones (torso / thigh0 / shin0 / upper0 / fore0 / ...)
+  // and marks the 1-2 bones that correspond to the exercise's primary target
+  // muscle with hl:true, which renderIcon() paints in the accent color —
+  // a "highlighted region" instead of small dot markers.
+  var POSES = {
+    squat: {
+      head:[100.8,43.35,9],
+      bones:[{name:'torso',x1:90,y1:84,x2:99.3,y2:49.2,hl:true}, {name:'thigh0',x1:90,y1:84,x2:102,y2:104.85,hl:true}, {name:'shin0',x1:102,y1:104.85,x2:85.05,y2:121.8}, {name:'upper0',x1:99.3,y1:49.2,x2:79.05,y2:54.6}, {name:'fore0',x1:79.05,y1:54.6,x2:60.15,y2:59.7}],
+      joints:[{x:102,y:104.85,hl:true}, {x:79.05,y:54.6}],
+      front:[{t:'line',x1:63.3,y1:47.7,x2:114.3,y2:47.7},{t:'circle',cx:63.3,cy:47.7,r:6},{t:'circle',cx:114.3,cy:47.7,r:6}],
+      ground:true,
+      muscles:["大腿四頭筋","臀筋","体幹"]
+    },
+    bench: {
+      head:[85.5,87,9],
+      bones:[{name:'torso',x1:127.5,y1:87,x2:91.5,y2:87,hl:true}, {name:'thigh0',x1:127.5,y1:87,x2:123.3,y2:110.7}, {name:'shin0',x1:123.3,y1:110.7,x2:127.5,y2:134.4}, {name:'upper0',x1:91.5,y1:87,x2:91.5,y2:66,hl:true}, {name:'fore0',x1:91.5,y1:66,x2:91.5,y2:46.5}],
+      joints:[{x:123.3,y:110.7}, {x:91.5,y:66,hl:true}],
+      back:[{t:'rect',x:78,y:85.5,w:57,h:13.5,rx:3}],
+      front:[{t:'line',x1:61.5,y1:46.5,x2:121.5,y2:46.5},{t:'circle',cx:61.5,cy:46.5,r:6},{t:'circle',cx:121.5,cy:46.5,r:6}],
+      muscles:["大胸筋","上腕三頭筋","三角筋前部"]
+    },
+    inclinebench: {
+      head:[85.5,87,9],
+      bones:[{name:'torso',x1:127.5,y1:87,x2:91.5,y2:87,hl:true}, {name:'thigh0',x1:127.5,y1:87,x2:123.3,y2:110.7}, {name:'shin0',x1:123.3,y1:110.7,x2:127.5,y2:134.4}, {name:'upper0',x1:91.5,y1:87,x2:91.5,y2:66,hl:true}, {name:'fore0',x1:91.5,y1:66,x2:91.5,y2:46.5}],
+      joints:[{x:123.3,y:110.7}, {x:91.5,y:66,hl:true}],
+      back:[{t:'rect',x:78,y:85.5,w:57,h:13.5,rx:3}],
+      front:[{t:'line',x1:61.5,y1:46.5,x2:121.5,y2:46.5},{t:'circle',cx:61.5,cy:46.5,r:6},{t:'circle',cx:121.5,cy:46.5,r:6}],
+      rotate:-16,
+      muscles:["大胸筋上部","三角筋前部","上腕三頭筋"]
+    },
+    fly: {
+      head:[85.5,87,9],
+      bones:[{name:'torso',x1:127.5,y1:87,x2:91.5,y2:87,hl:true}, {name:'thigh0',x1:127.5,y1:87,x2:123.3,y2:110.7}, {name:'shin0',x1:123.3,y1:110.7,x2:127.5,y2:134.4}, {name:'upper0',x1:91.5,y1:87,x2:76.65,y2:72.15}, {name:'fore0',x1:76.65,y1:72.15,x2:62.85,y2:58.35}, {name:'upper1',x1:91.5,y1:87,x2:106.35,y2:72.15}, {name:'fore1',x1:106.35,y1:72.15,x2:120.15,y2:58.35}],
+      joints:[{x:123.3,y:110.7}, {x:76.65,y:72.15}, {x:106.35,y:72.15}],
+      back:[{t:'rect',x:78,y:85.5,w:57,h:13.5,rx:3}],
+      front:[{t:'circle',cx:62.85,cy:58.35,r:5.25},{t:'circle',cx:120.15,cy:58.35,r:5.25}],
+      muscles:["大胸筋","三角筋前部"]
+    },
+    chinup: {
+      head:[90,48,9],
+      bones:[{name:'torso',x1:90,y1:90,x2:90,y2:54,hl:true}, {name:'thigh0',x1:90,y1:90,x2:85.8,y2:113.7}, {name:'shin0',x1:85.8,y1:113.7,x2:90,y2:137.4}, {name:'upper0',x1:90,y1:54,x2:79.5,y2:35.85,hl:true}, {name:'fore0',x1:79.5,y1:35.85,x2:69.75,y2:18.9}, {name:'upper1',x1:90,y1:54,x2:100.5,y2:35.85,hl:true}, {name:'fore1',x1:100.5,y1:35.85,x2:110.25,y2:18.9}],
+      joints:[{x:85.8,y:113.7}, {x:79.5,y:35.85,hl:true}, {x:100.5,y:35.85,hl:true}],
+      back:[{t:'line',x1:60.75,y1:15.9,x2:119.25,y2:15.9}],
+      muscles:["広背筋","僧帽筋","上腕二頭筋"]
+    },
+    shoulderpress: {
+      head:[90,39,9],
+      bones:[{name:'torso',x1:90,y1:81,x2:90,y2:45,hl:true}, {name:'thigh0',x1:90,y1:81,x2:90,y2:105}, {name:'shin0',x1:90,y1:105,x2:90,y2:129}, {name:'upper0',x1:90,y1:45,x2:79.5,y2:26.85,hl:true}, {name:'fore0',x1:79.5,y1:26.85,x2:69.75,y2:9.9}, {name:'upper1',x1:90,y1:45,x2:100.5,y2:26.85,hl:true}, {name:'fore1',x1:100.5,y1:26.85,x2:110.25,y2:9.9}],
+      joints:[{x:90,y:105}, {x:79.5,y:26.85,hl:true}, {x:100.5,y:26.85,hl:true}],
+      front:[{t:'circle',cx:69.75,cy:9.9,r:5.25},{t:'circle',cx:110.25,cy:9.9,r:5.25}],
+      ground:true,
+      muscles:["三角筋","僧帽筋","上腕三頭筋"]
+    },
+    legcurl: {
+      head:[85.5,87,9],
+      bones:[{name:'torso',x1:127.5,y1:87,x2:91.5,y2:87}, {name:'thigh0',x1:127.5,y1:87,x2:123.3,y2:110.7,hl:true}, {name:'shin0',x1:123.3,y1:110.7,x2:135.3,y2:89.85,hl:true}, {name:'upper0',x1:91.5,y1:87,x2:84.3,y2:67.2}, {name:'fore0',x1:84.3,y1:67.2,x2:77.7,y2:48.9}],
+      joints:[{x:123.3,y:110.7,hl:true}, {x:84.3,y:67.2}],
+      back:[{t:'rect',x:78,y:85.5,w:57,h:13.5,rx:3}],
+      muscles:["ハムストリングス","下腿三頭筋"]
+    },
+    curl: {
+      head:[90,39,9],
+      bones:[{name:'torso',x1:90,y1:81,x2:90,y2:45}, {name:'thigh0',x1:90,y1:81,x2:90,y2:105}, {name:'shin0',x1:90,y1:105,x2:90,y2:129}, {name:'upper0',x1:90,y1:45,x2:86.4,y2:65.7,hl:true}, {name:'fore0',x1:86.4,y1:65.7,x2:103.35,y2:55.95,hl:true}],
+      joints:[{x:90,y:105}, {x:86.4,y:65.7,hl:true}],
+      front:[{t:'line',x1:89.85,y1:55.95,x2:116.85,y2:55.95},{t:'circle',cx:89.85,cy:55.95,r:4.5},{t:'circle',cx:116.85,cy:55.95,r:4.5}],
+      ground:true,
+      muscles:["上腕二頭筋","前腕"]
+    },
+    triceps: {
+      head:[85.5,87,9],
+      bones:[{name:'torso',x1:127.5,y1:87,x2:91.5,y2:87}, {name:'thigh0',x1:127.5,y1:87,x2:123.3,y2:110.7}, {name:'shin0',x1:123.3,y1:110.7,x2:127.5,y2:134.4}, {name:'upper0',x1:91.5,y1:87,x2:91.5,y2:66,hl:true}, {name:'fore0',x1:91.5,y1:66,x2:74.55,y2:56.25}],
+      joints:[{x:123.3,y:110.7}, {x:91.5,y:66,hl:true}],
+      back:[{t:'rect',x:78,y:85.5,w:57,h:13.5,rx:3}],
+      front:[{t:'circle',cx:74.55,cy:56.25,r:4.5}],
+      muscles:["上腕三頭筋"]
+    },
+    lateral: {
+      head:[90,39,9],
+      bones:[{name:'torso',x1:90,y1:81,x2:90,y2:45,hl:true}, {name:'thigh0',x1:90,y1:81,x2:90,y2:105}, {name:'shin0',x1:90,y1:105,x2:90,y2:129}, {name:'upper0',x1:90,y1:45,x2:69,y2:45,hl:true}, {name:'fore0',x1:69,y1:45,x2:49.5,y2:45}, {name:'upper1',x1:90,y1:45,x2:111,y2:45,hl:true}, {name:'fore1',x1:111,y1:45,x2:130.5,y2:45}],
+      joints:[{x:90,y:105}, {x:69,y:45,hl:true}, {x:111,y:45,hl:true}],
+      front:[{t:'circle',cx:49.5,cy:45,r:4.5},{t:'circle',cx:130.5,cy:45,r:4.5}],
+      ground:true,
+      muscles:["三角筋中部","僧帽筋"]
+    },
+    deadlift: {
+      head:[123.45,63,9],
+      bones:[{name:'torso',x1:87,y1:84,x2:118.2,y2:66,hl:true}, {name:'thigh0',x1:87,y1:84,x2:82.8,y2:107.7,hl:true}, {name:'shin0',x1:82.8,y1:107.7,x2:87,y2:131.4}, {name:'upper0',x1:118.2,y1:66,x2:118.2,y2:87}, {name:'fore0',x1:118.2,y1:87,x2:118.2,y2:106.5}],
+      joints:[{x:82.8,y:107.7,hl:true}, {x:118.2,y:87}],
+      front:[{t:'line',x1:91.2,y1:106.5,x2:145.2,y2:106.5},{t:'circle',cx:91.2,cy:106.5,r:7.5},{t:'circle',cx:145.2,cy:106.5,r:7.5}],
+      ground:true,
+      muscles:["脊柱起立筋","ハムストリングス","臀筋"]
+    },
+    latpulldown: {
+      head:[82.65,60.75,9],
+      bones:[{name:'torso',x1:90,y1:102,x2:83.7,y2:66.6,hl:true}, {name:'thigh0',x1:90,y1:102,x2:110.85,y2:114}, {name:'shin0',x1:110.85,y1:114,x2:106.65,y2:137.7}, {name:'upper0',x1:83.7,y1:66.6,x2:65.55,y2:56.1,hl:true}, {name:'fore0',x1:65.55,y1:56.1,x2:62.1,y2:75.3}, {name:'upper1',x1:83.7,y1:66.6,x2:101.85,y2:56.1,hl:true}, {name:'fore1',x1:101.85,y1:56.1,x2:105.3,y2:75.3}],
+      joints:[{x:110.85,y:114}, {x:65.55,y:56.1,hl:true}, {x:101.85,y:56.1,hl:true}],
+      back:[{t:'rect',x:81,y:102,w:36,h:30,rx:3}],
+      front:[{t:'line',x1:54,y1:75.3,x2:114,y2:75.3}],
+      muscles:["広背筋","僧帽筋","上腕二頭筋"]
+    },
+    row: {
+      head:[101.4,57.15,9],
+      bones:[{name:'torso',x1:105,y1:99,x2:101.85,y2:63.15,hl:true}, {name:'thigh0',x1:105,y1:99,x2:127.5,y2:107.25}, {name:'shin0',x1:127.5,y1:107.25,x2:151.2,y2:111.45}, {name:'upper0',x1:101.85,y1:63.15,x2:81.15,y2:66.75,hl:true}, {name:'fore0',x1:81.15,y1:66.75,x2:61.95,y2:70.2}],
+      joints:[{x:127.5,y:107.25}, {x:81.15,y:66.75,hl:true}],
+      back:[{t:'rect',x:147,y:105,w:12,h:15,rx:3}],
+      front:[{t:'line',x1:61.95,y1:70.2,x2:33,y2:96}],
+      muscles:["広背筋","僧帽筋","上腕二頭筋"]
+    },
+    legpress: {
+      head:[38.1,53.4,9],
+      bones:[{name:'torso',x1:52.5,y1:93,x2:40.2,y2:59.1}, {name:'thigh0',x1:52.5,y1:93,x2:75,y2:101.25,hl:true}, {name:'shin0',x1:75,y1:101.25,x2:98.7,y2:105.45}, {name:'upper0',x1:40.2,y1:59.1,x2:56.25,y2:45.6}, {name:'fore0',x1:56.25,y1:45.6,x2:71.25,y2:33}],
+      joints:[{x:75,y:101.25,hl:true}, {x:56.25,y:45.6}],
+      back:[{t:'rect',x:22.5,y:82.5,w:39,h:24,rx:4.5}],
+      front:[{t:'rect',x:96,y:72,w:12,h:42,rx:3}],
+      muscles:["大腿四頭筋","臀筋","ハムストリングス"]
+    },
+    abroller: {
+      head:[72.9,90.6,9],
+      bones:[{name:'torso',x1:75,y1:105,x2:108.9,y2:92.7,hl:true}, {name:'thigh0',x1:75,y1:105,x2:70.8,y2:128.7}, {name:'shin0',x1:70.8,y1:128.7,x2:47.1,y2:132.9}, {name:'upper0',x1:108.9,y1:92.7,x2:123.75,y2:107.55}, {name:'fore0',x1:123.75,y1:107.55,x2:133.5,y2:124.5}],
+      joints:[{x:70.8,y:128.7}, {x:123.75,y:107.55}],
+      front:[{t:'circle',cx:133.5,cy:124.5,r:7.5}],
+      ground:true,
+      muscles:["腹直筋","体幹"]
+    }
+  };
+
+  // ---- form guidance (setup / movement flow / key points) ----
+  var FORMS = {
+    squat: {
+      setup:'肩幅よりやや広いスタンスで立ち、バーは僧帽筋の上に乗せる。つま先はやや外向き。',
+      steps:['息を吸って腹圧を入れる','お尻を後ろに引きながら、膝とつま先を同じ方向へ曲げて下ろす','太ももが床と平行になる深さまで下ろす','かかとで床を押すように立ち上がる'],
+      tips:['膝が内側に入らないようにする','下ろす途中で上体から先に潰れない','息は下ろす前に吸い、立ち上がりきったら吐く']
+    },
+    bench: {
+      setup:'ベンチに肩甲骨を寄せて寝る。目線の真上にバーが来る位置。足は床にしっかりつける。',
+      steps:['肩甲骨を寄せたまま、バーを胸の下部(みぞおち寄り)まで下ろす','肘は体側から45度前後を保つ','胸で弾ませず、床を押すように押し上げる'],
+      tips:['お尻をベンチから浮かせない','バーを下ろす軌道が毎回ブレないようにする','手首は寝かせずまっすぐ保つ']
+    },
+    inclinebench: {
+      setup:'インクラインベンチ(30度前後)に座り、肩甲骨を寄せて固定。バーは目線よりやや上。',
+      steps:['肩甲骨を寄せたまま、バーを鎖骨の下あたりまで下ろす','肘の角度は45度前後を保つ','上部胸筋で押し上げるイメージで戻す'],
+      tips:['角度を上げすぎる(45度以上)と肩に負担が集中しやすい','反動を使わずコントロールして下ろす']
+    },
+    fly: {
+      setup:'ベンチに仰向け、ダンベルを胸の上でやや肘を曲げた状態からスタート。',
+      steps:['肘の角度を保ったまま、弧を描くように腕を左右に開く','胸のストレッチを感じる位置まで下ろす','胸の力で弧を描くように戻す'],
+      tips:['肘を伸ばしきらない(肘関節への負担を避ける)','重すぎる重量は肩を痛めやすいので軽めから']
+    },
+    chinup: {
+      setup:'肩幅よりやや広めの順手でバーを握り、腕を伸ばしてぶら下がった状態からスタート。',
+      steps:['引き始める前に肩甲骨を下げる','顎がバーの高さを超えるまで体を引き上げる','コントロールしながら腕を伸ばしきる位置まで戻す'],
+      tips:['反動(勢い)を使いすぎない','肩がすくまないよう、最初に肩甲骨を下げる意識を持つ']
+    },
+    shoulderpress: {
+      setup:'座位または立位で、ダンベルを肩の高さに構える。肘はやや前方。',
+      steps:['ダンベルを頭上までまっすぐ押し上げる','肘を伸ばしきる手前で止める','コントロールしながら肩の高さまで戻す'],
+      tips:['腰を反りすぎない(腹圧を入れて体幹を安定させる)','ダンベルが顔の前を通りすぎないよう、軌道はやや外側に']
+    },
+    legcurl: {
+      setup:'うつ伏せでマシンに乗り、パッドをかかとの上あたりに合わせる。',
+      steps:['かかとをお尻に近づけるように膝を曲げる','収縮した位置で一瞬止める','コントロールしながらゆっくり戻す'],
+      tips:['反動をつけない','腰が浮かないよう骨盤を固定する']
+    },
+    curl: {
+      setup:'肩幅程度のスタンスで立ち、バーを肩幅で順手に握る。肘は体側につける。',
+      steps:['肘の位置を固定したまま前腕を巻き上げる','収縮位置で軽く絞る','ゆっくり伸ばしきる位置まで戻す'],
+      tips:['体を反らして反動をつけない(チーティング注意)','肘が前後に動かないよう固定する']
+    },
+    triceps: {
+      setup:'ベンチに仰向け、バーベルまたはダンベルを腕を伸ばした状態で胸の上に構える。',
+      steps:['上腕の角度を固定したまま、肘だけを曲げておでこの後ろ側あたりまで下ろす','肘の位置を動かさずに伸ばして戻す'],
+      tips:['肘が外に開かないよう固定する','重すぎる重量は肘関節に負担がかかりやすいので軽めから']
+    },
+    lateral: {
+      setup:'立位で、ダンベルを体側に構える。肘は軽く曲げたまま。',
+      steps:['肘から先ではなく、肩から腕全体を横に上げる','肩の高さまで上げたら一瞬止める','ゆっくり戻す'],
+      tips:['勢いで振り上げない','肩をすくめて上げない。肩関節から動かす意識を持つ']
+    },
+    deadlift: {
+      setup:'バーの真上にすねが来る位置に立ち、肩幅程度のスタンス。バーを肩幅で握る。',
+      steps:['息を吸って腹圧を入れ、胸を張ったまま構える','お尻を突き出しながら、バーを脚に沿わせて引き上げる','股関節と膝を同時に伸ばしきる'],
+      tips:['背中を丸めない(腰が丸まると怪我のリスクが上がる)','バーを体から離さず、すねに沿わせたまま引く']
+    },
+    latpulldown: {
+      setup:'マシンに座り、太ももをパッドで固定。バーを肩幅より広めに握る。',
+      steps:['肩甲骨を下げてから、肘を下に引くようにバーを鎖骨あたりまで引く','収縮位置で一瞬止める','コントロールしながら腕を伸ばしきる位置まで戻す'],
+      tips:['体を後ろに倒しすぎて反動を使わない','引く時に肩がすくまないようにする']
+    },
+    row: {
+      setup:'マシンに座り、足をフットプレートに置く。ハンドルを握り、背筋を伸ばして構える。',
+      steps:['肘を後ろに引くようにハンドルを体に近づける','肩甲骨を寄せる意識で引ききる','コントロールしながら腕を伸ばして戻す'],
+      tips:['背中が丸まらないよう胸を張ったまま行う','反動で体を大きく前後に振らない']
+    },
+    legpress: {
+      setup:'シートに座り、足は肩幅程度でプレートの中央に置く。',
+      steps:['膝を曲げてプレートを胸に近づける(無理のない深さまで)','かかとでプレートを押すように伸ばす','膝を伸ばしきる手前で止める'],
+      tips:['膝を完全にロックしない(関節への負担を避ける)','腰がシートから浮かない深さまでにとどめる']
+    },
+    abroller: {
+      setup:'膝立ちでローラーを両手で握り、体の前に置く。',
+      steps:['腹筋に力を入れたまま、ローラーを前方に転がす','腰が反らない範囲まで体を伸ばす','腹筋の力でローラーを引き戻す'],
+      tips:['腰が反ると痛めやすいので、届く範囲から始める','膝立ちがきつければ可動域を小さくしてOK']
+    }
+  };
+
+  function youtubeSearchUrl(query){
+    return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(query);
+  }
+
+  function formPanelHtml(poseKey, exName){
+    var f = FORMS[poseKey];
+    if(!f) return '<div class="form-panel" hidden></div>';
+    var steps = f.steps.map(function(s){ return '<li>' + s + '</li>'; }).join('');
+    var tips = f.tips.map(function(t){ return '<li>' + t + '</li>'; }).join('');
+    var videoUrl = youtubeSearchUrl(exName + ' やり方');
+    return '<div class="form-panel" hidden>' +
+      '<div class="form-block"><span class="form-label">セットポジション</span><p>' + f.setup + '</p></div>' +
+      '<div class="form-block"><span class="form-label">動作の流れ</span><ol>' + steps + '</ol></div>' +
+      '<div class="form-block"><span class="form-label">フォームのポイント</span><ul>' + tips + '</ul>' +
+        '<a class="video-link" href="' + videoUrl + '" target="_blank" rel="noopener">▶ 「' + exName + ' やり方」をYouTubeで見る</a>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function shapeToSvg(s){
+    if(s.t === 'rect') return '<rect x="'+s.x+'" y="'+s.y+'" width="'+s.w+'" height="'+s.h+'" rx="'+(s.rx||2)+'" class="pp-rect"></rect>';
+    if(s.t === 'line') return '<line x1="'+s.x1+'" y1="'+s.y1+'" x2="'+s.x2+'" y2="'+s.y2+'" class="pp-line"></line>';
+    if(s.t === 'circle') return '<circle cx="'+s.cx+'" cy="'+s.cy+'" r="'+s.r+'" class="pp-circle"></circle>';
+    return '';
+  }
+
+  function renderIcon(poseKey){
+    var p = POSES[poseKey];
+    if(!p) return '';
+    var inner = '';
+    if(p.ground){ inner += '<line x1="10" y1="136" x2="170" y2="136" class="pg"></line>'; }
+    (p.back || []).forEach(function(s){ inner += shapeToSvg(s); });
+    (p.bones || []).forEach(function(b){
+      inner += '<line x1="'+b.x1+'" y1="'+b.y1+'" x2="'+b.x2+'" y2="'+b.y2+'" class="bone'+(b.hl ? ' bone-hl' : '')+'"></line>';
+    });
+    (p.joints || []).forEach(function(j){
+      inner += '<circle cx="'+j.x+'" cy="'+j.y+'" r="5.5" class="joint'+(j.hl ? ' joint-hl' : '')+'"></circle>';
+    });
+    if(p.head){ inner += '<circle cx="'+p.head[0]+'" cy="'+p.head[1]+'" r="'+p.head[2]+'" class="head-fill"></circle>'; }
+    (p.front || []).forEach(function(s){ inner += shapeToSvg(s); });
+    if(p.rotate){ inner = '<g transform="rotate('+p.rotate+' 90 82.5)">' + inner + '</g>'; }
+    return '<svg viewBox="0 0 180 144" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' + inner + '</svg>';
+  }
+
+  var EXERCISES = [
+    // full body
+    {id:"full-abroller", day:"full", order:1, name:"アブローラー", sets:2, repLow:8, repHigh:12, inc:null, main:false, note:"セットアップとして軽めに", pose:"abroller"},
+    {id:"full-squat", day:"full", order:2, name:"スクワット", sets:3, repLow:6, repHigh:10, inc:2.5, main:true, pose:"squat"},
+    {id:"full-bench", day:"full", order:3, name:"ベンチプレス", sets:3, repLow:6, repHigh:10, inc:2.5, main:true, pose:"bench"},
+    {id:"full-chinup", day:"full", order:4, name:"懸垂", sets:3, repLow:4, repHigh:8, inc:null, main:true, note:"体重が負荷。伸びたらウエイトベルトも検討", pose:"chinup"},
+    {id:"full-shoulder", day:"full", order:5, name:"ダンベルショルダープレス", sets:2, repLow:8, repHigh:12, inc:1.25, main:false, pose:"shoulderpress"},
+    {id:"full-legcurl", day:"full", order:6, name:"レッグカール", sets:2, repLow:10, repHigh:15, inc:2.5, main:false, pose:"legcurl"},
+    {id:"full-curl", day:"full", order:7, name:"バーベルカール", sets:2, repLow:10, repHigh:15, inc:1.25, main:false, pose:"curl"},
+    {id:"full-tricep", day:"full", order:8, name:"ライイングトライセプスエクステンション", sets:2, repLow:10, repHigh:15, inc:1.25, main:false, pose:"triceps"},
+
+    // chest day
+    {id:"chest-abroller", day:"chest", order:1, name:"アブローラー", sets:2, repLow:8, repHigh:12, inc:null, main:false, note:"セットアップとして軽めに", pose:"abroller"},
+    {id:"chest-bench", day:"chest", order:2, name:"ベンチプレス", sets:3, repLow:6, repHigh:10, inc:2.5, main:true, note:"この日のメイン", pose:"bench"},
+    {id:"chest-incline", day:"chest", order:3, name:"インクラインベンチプレス", sets:3, repLow:6, repHigh:10, inc:2, main:true, pose:"inclinebench"},
+    {id:"chest-fly", day:"chest", order:4, name:"ダンベルフライ", sets:2, repLow:10, repHigh:15, inc:1, main:false, note:"片手あたりの重量", pose:"fly"},
+    {id:"chest-tricep", day:"chest", order:5, name:"ライイングトライセプスエクステンション", sets:3, repLow:8, repHigh:12, inc:1.25, main:false, pose:"triceps"},
+    {id:"chest-side", day:"chest", order:6, name:"サイドレイズ", sets:3, repLow:12, repHigh:20, inc:1, main:false, note:"片手あたりの重量", pose:"lateral"},
+
+    // back day (reordered: deadlift moved from 5th to 3rd)
+    {id:"back-abroller", day:"back", order:1, name:"アブローラー", sets:2, repLow:8, repHigh:12, inc:null, main:false, note:"セットアップとして軽めに", pose:"abroller"},
+    {id:"back-chinup", day:"back", order:2, name:"懸垂", sets:3, repLow:4, repHigh:8, inc:null, main:true, note:"この日のメイン。必ず最初の方に", pose:"chinup"},
+    {id:"back-deadlift", day:"back", order:3, name:"デッドリフト", sets:3, repLow:5, repHigh:8, inc:2.5, main:true, note:"グリップ・腰がフレッシュなうちに", pose:"deadlift"},
+    {id:"back-latpull", day:"back", order:4, name:"ラットプルダウン", sets:3, repLow:8, repHigh:12, inc:2.5, main:false, pose:"latpulldown"},
+    {id:"back-row", day:"back", order:5, name:"ローイング", sets:3, repLow:8, repHigh:12, inc:2.5, main:false, pose:"row"},
+    {id:"back-curl", day:"back", order:6, name:"バーベルカール", sets:3, repLow:8, repHigh:12, inc:1.25, main:false, pose:"curl"},
+
+    // leg day
+    {id:"leg-abroller", day:"leg", order:1, name:"アブローラー", sets:2, repLow:8, repHigh:12, inc:null, main:false, note:"セットアップとして軽めに", pose:"abroller"},
+    {id:"leg-squat", day:"leg", order:2, name:"スクワット", sets:3, repLow:6, repHigh:10, inc:2.5, main:true, note:"この日のメイン", pose:"squat"},
+    {id:"leg-press", day:"leg", order:3, name:"レッグプレス", sets:3, repLow:8, repHigh:12, inc:5, main:false, pose:"legpress"},
+    {id:"leg-curl", day:"leg", order:4, name:"レッグカール", sets:3, repLow:10, repHigh:15, inc:2.5, main:false, pose:"legcurl"},
+    {id:"leg-shoulder", day:"leg", order:5, name:"ダンベルショルダープレス", sets:3, repLow:6, repHigh:10, inc:1.25, main:false, pose:"shoulderpress"},
+    {id:"leg-side", day:"leg", order:6, name:"サイドレイズ", sets:3, repLow:12, repHigh:20, inc:1, main:false, note:"片手あたりの重量", pose:"lateral"}
+  ];
+
+  var STORAGE_KEY = 'atsumi-keikaku-log-v1';
+
+  function normalizeLog(log){
+    Object.keys(log || {}).forEach(function(exId){
+      (log[exId] || []).forEach(function(entry){
+        (entry.sets || []).forEach(function(s){
+          if(s.weight === null || s.weight === undefined) s.weight = NaN;
+          if(s.reps === null || s.reps === undefined) s.reps = NaN;
+        });
+      });
+    });
+    return log;
+  }
+  function loadLog(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? normalizeLog(JSON.parse(raw)) : {};
+    }catch(e){ return {}; }
+  }
+  function saveLog(log){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(log)); }catch(e){}
+  }
+  function deleteLogEntry(exId, idx){
+    var log = loadLog();
+    if(log[exId] && log[exId][idx] !== undefined){
+      log[exId].splice(idx, 1);
+      saveLog(log);
+      return true;
+    }
+    return false;
+  }
+
+  // ---- cross-device sync via the artifact capability (best-effort; localStorage stays the source of truth locally) ----
+  var SYNC_DATA_PATH = 'data/log.json';
+  var SYNC_STATUS_KEY = 'atsumi-keikaku-sync-status-v1';
+
+  function setSyncStatus(state, code){
+    try{ localStorage.setItem(SYNC_STATUS_KEY, JSON.stringify({state:state, code:code || '', at:new Date().toISOString()})); }catch(e){}
+    renderSyncStatus();
+  }
+
+  function renderSyncStatus(){
+    var els = document.querySelectorAll('.sync-status');
+    if(!els.length) return;
+    var raw, s;
+    try{ raw = localStorage.getItem(SYNC_STATUS_KEY); }catch(e){ raw = null; }
+    try{ s = raw ? JSON.parse(raw) : null; }catch(e){ s = null; }
+    var cls, text;
+    if(!s){
+      cls = 'sync-status neutral';
+      text = '☁️ 未同期';
+    } else {
+      var timeStr = '';
+      try{
+        var d = new Date(s.at);
+        timeStr = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+      }catch(e){}
+      if(s.state === 'ok'){
+        cls = 'sync-status ok';
+        text = '☁️ ' + timeStr + ' に他端末と同期済み';
+      } else if(s.state === 'unavailable'){
+        cls = 'sync-status warn';
+        text = '⚠️ この環境ではクラウド同期非対応。バックアップを保存してください';
+      } else {
+        cls = 'sync-status warn';
+        text = '⚠️ ' + timeStr + ' 同期失敗' + (s.code ? '(' + s.code + ')' : '') + '(この端末には保存済み)';
+      }
+    }
+    els.forEach(function(el){
+      el.className = cls;
+      el.textContent = text;
+    });
+  }
+
+  // Codes the runtime documents as permanent for this view — retrying never helps,
+  // so these get the calm "not supported here" message instead of a scary "failed".
+  var SYNC_PERMANENT_CODES = {
+    capability_disabled: true,
+    capability_removed: true,
+    not_granted: true,
+    not_writer: true,
+    not_declared: true
+  };
+
+  function syncToServer(){
+    if(!window.claude || typeof window.claude.use !== 'function'){
+      setSyncStatus('unavailable');
+      return;
+    }
+    window.claude.use('artifact').then(function(cap){
+      if(!cap || typeof cap.publish !== 'function'){ setSyncStatus('unavailable'); return; }
+      var payload = JSON.stringify({
+        log: loadLog(),
+        profile: loadProfile(),
+        phase1Override: loadPhase1Override()
+      });
+      var files = {};
+      files[SYNC_DATA_PATH] = payload;
+      return cap.publish(files).then(function(){
+        setSyncStatus('ok');
+      }, function(err){
+        var code = err && err.code;
+        setSyncStatus(SYNC_PERMANENT_CODES[code] ? 'unavailable' : 'error', code);
+      });
+    }).catch(function(err){
+      var code = err && err.code;
+      setSyncStatus(SYNC_PERMANENT_CODES[code] ? 'unavailable' : 'error', code);
+    });
+  }
+
+  // This platform has no reliable persistent/cloud storage for this artifact (sync above
+  // is confirmed permanently disabled), so a fresh backup file is the only real safety net.
+  // These two helpers keep that fact visible instead of silent: a dot on the backup button
+  // when there's unbacked-up data, and a recovery banner when local storage looks wiped.
+  var NEEDS_BACKUP_KEY = 'atsumi-keikaku-needs-backup-v1';
+  function markNeedsBackup(){
+    try{ localStorage.setItem(NEEDS_BACKUP_KEY, '1'); }catch(e){}
+    updateBackupBadge();
+  }
+  function clearNeedsBackup(){
+    try{ localStorage.removeItem(NEEDS_BACKUP_KEY); }catch(e){}
+    updateBackupBadge();
+  }
+  function updateBackupBadge(){
+    var btn = document.getElementById('backup-btn');
+    if(!btn) return;
+    var needs;
+    try{ needs = localStorage.getItem(NEEDS_BACKUP_KEY) === '1'; }catch(e){ needs = false; }
+    btn.classList.toggle('needs-backup', needs);
+  }
+  function updateRecoverBanner(){
+    var banner = document.getElementById('recover-banner');
+    if(!banner || banner.dataset.dismissed === '1') return;
+    banner.hidden = Object.keys(loadLog()).length > 0;
+  }
+  function initRecoverBanner(){
+    var banner = document.getElementById('recover-banner');
+    var dismiss = document.getElementById('recover-dismiss');
+    if(!banner) return;
+    if(dismiss){
+      dismiss.addEventListener('click', function(){
+        banner.dataset.dismissed = '1';
+        banner.hidden = true;
+      });
+    }
+    updateRecoverBanner();
+    updateBackupBadge();
+  }
+
+  function initBackupButton(){
+    var btn = document.getElementById('backup-btn');
+    var status = document.getElementById('backup-status');
+    if(!btn) return;
+    function report(msg, isError){
+      if(!status) return;
+      status.textContent = msg;
+      status.classList.toggle('warn', !!isError);
+      status.classList.add('show');
+      clearTimeout(status._hideTimer);
+      status._hideTimer = setTimeout(function(){ status.classList.remove('show'); }, 3200);
+    }
+    function payload(){
+      return JSON.stringify({
+        log: loadLog(),
+        profile: loadProfile(),
+        phase1Override: loadPhase1Override(),
+        exportedAt: new Date().toISOString()
+      }, null, 2);
+    }
+    function filename(){
+      return 'mass-protocol-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+    }
+    // Standard browser download (Blob + <a download>) — works on any normal
+    // host, unlike the Claude-artifact-only `downloads` capability below.
+    function saveViaBlob(){
+      try{
+        var blob = new Blob([payload()], {type: 'application/json'});
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = filename();
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+        report('保存しました', false);
+        clearNeedsBackup();
+      }catch(e){
+        report('保存に失敗しました', true);
+      }
+    }
+    btn.addEventListener('click', function(){
+      if(!window.claude || typeof window.claude.use !== 'function'){
+        saveViaBlob();
+        return;
+      }
+      window.claude.use('downloads').then(function(dl){
+        if(!dl || typeof dl.save !== 'function'){
+          saveViaBlob();
+          return;
+        }
+        return dl.save({filename: filename(), data: payload()}).then(function(){
+          report('保存しました', false);
+          clearNeedsBackup();
+        });
+      }).catch(function(err){
+        if(err && err.code === 'declined') return;
+        report('保存に失敗しました', true);
+      });
+    });
+  }
+
+  // Union merge: fills in any exercise/date the current log is missing from the
+  // restored file, but never overwrites a date already present locally — a restore
+  // can only add records back, never silently replace what's already on screen.
+  function mergeLogs(base, incoming){
+    var result = {};
+    Object.keys(base || {}).forEach(function(exId){ result[exId] = (base[exId] || []).slice(); });
+    Object.keys(incoming || {}).forEach(function(exId){
+      var existing = result[exId] || [];
+      var existingDates = {};
+      existing.forEach(function(e){ existingDates[e.date] = true; });
+      (incoming[exId] || []).forEach(function(entry){
+        if(!existingDates[entry.date]){ existing.push(entry); }
+      });
+      existing.sort(function(a, b){ return a.date < b.date ? -1 : (a.date > b.date ? 1 : 0); });
+      result[exId] = existing;
+    });
+    return result;
+  }
+
+  function initRestoreInput(){
+    var input = document.getElementById('restore-input');
+    var status = document.getElementById('backup-status');
+    if(!input) return;
+    function report(msg, isError){
+      if(!status) return;
+      status.textContent = msg;
+      status.classList.toggle('warn', !!isError);
+      status.classList.add('show');
+      clearTimeout(status._hideTimer);
+      status._hideTimer = setTimeout(function(){ status.classList.remove('show'); }, 3200);
+    }
+    input.addEventListener('change', function(){
+      var file = input.files && input.files[0];
+      input.value = '';
+      if(!file) return;
+      file.text().then(function(text){
+        var data;
+        try{ data = JSON.parse(text); }catch(e){ report('ファイルの形式が正しくありません', true); return; }
+        if(!data || typeof data.log !== 'object'){ report('バックアップファイルではないようです', true); return; }
+        var merged = mergeLogs(loadLog(), normalizeLog(data.log));
+        saveLog(merged);
+        if(data.profile){ saveProfile(data.profile); }
+        if(data.phase1Override !== undefined){ savePhase1Override(data.phase1Override); }
+        renderLists();
+        renderPhaseSchedule();
+        currentChartExercise = null; // let the progress chart re-pick its default now that new data exists
+        renderProgress();
+        var profile = loadProfile();
+        var wInput = document.getElementById('p-weight');
+        var hInput = document.getElementById('p-height');
+        var aInput = document.getElementById('p-age');
+        if(wInput) wInput.value = profile.weight;
+        if(hInput) hInput.value = profile.height;
+        if(aInput) aInput.value = profile.age;
+        updateBmi();
+        updateNutritionCallout();
+        report('復元しました', false);
+        markNeedsBackup();
+        updateRecoverBanner();
+        syncToServer();
+      }).catch(function(){ report('読み込みに失敗しました', true); });
+    });
+  }
+
+  function totalLogEntries(log){
+    var n = 0;
+    Object.keys(log || {}).forEach(function(exId){ n += (log[exId] || []).length; });
+    return n;
+  }
+
+  function hydrateFromServer(){
+    if(typeof fetch !== 'function') return;
+    fetch(SYNC_DATA_PATH, {cache:'no-store'}).then(function(res){
+      return res.ok ? res.json() : null;
+    }).then(function(data){
+      if(!data || !data.log) return;
+      var serverLog = normalizeLog(data.log);
+      // Never let a stale/smaller server copy erase fuller local data — only pull when the
+      // server genuinely has more recorded sets than this device does right now.
+      if(totalLogEntries(serverLog) <= totalLogEntries(loadLog())) return;
+      saveLog(serverLog);
+      if(data.profile){ saveProfile(data.profile); }
+      if(data.phase1Override !== undefined){ savePhase1Override(data.phase1Override); }
+      renderLists();
+      renderPhaseSchedule();
+      renderProgress();
+      var profile = loadProfile();
+      var wInput = document.getElementById('p-weight');
+      var hInput = document.getElementById('p-height');
+      var aInput = document.getElementById('p-age');
+      if(wInput) wInput.value = profile.weight;
+      if(hInput) hInput.value = profile.height;
+      if(aInput) aInput.value = profile.age;
+      updateBmi();
+      updateNutritionCallout();
+    }).catch(function(){ /* no server copy yet (first run) or offline: local data stays as-is */ });
+  }
+
+  function targetStr(ex){
+    return ex.sets + "セット × " + ex.repLow + "〜" + ex.repHigh + "回";
+  }
+
+  function getEntries(exId){
+    var log = loadLog();
+    return log[exId] || [];
+  }
+  function getLastEntry(exId){
+    var entries = getEntries(exId);
+    return entries.length ? entries[entries.length - 1] : null;
+  }
+
+  function round1(n){ return Math.round(n * 100) / 100; }
+
+  function classifyLast(ex, lastEntry){
+    if(!lastEntry) return {state:'neutral', maxW:null};
+    var reps = lastEntry.sets.map(function(s){ return s.reps; }).filter(function(r){ return !isNaN(r); });
+    var weights = lastEntry.sets.map(function(s){ return s.weight; }).filter(function(w){ return !isNaN(w); });
+    var maxW = weights.length ? Math.max.apply(null, weights) : null;
+    var allAtTop = reps.length > 0 && reps.every(function(r){ return r >= ex.repHigh; });
+    var anyBelowLow = reps.some(function(r){ return r < ex.repLow; });
+    var state = allAtTop ? 'up' : (anyBelowLow ? 'warn' : 'hold');
+    return {state:state, maxW:maxW};
+  }
+
+  function computeSuggestion(ex, lastEntry){
+    var c = classifyLast(ex, lastEntry);
+    if(c.state === 'neutral'){
+      return {chip:'neutral', label:'初回', detail:'目標' + ex.repLow + '〜' + ex.repHigh + '回で組める重量から開始'};
+    }
+    if(ex.inc === null){
+      if(c.state === 'up') return {chip:'up', label:'負荷アップ', detail:'全セット上限到達。強度を上げましょう'};
+      if(c.state === 'warn') return {chip:'warn', label:'同条件で継続', detail:'下限回数未到達のセットあり。同強度で再挑戦'};
+      return {chip:'hold', label:'回数を伸ばす', detail:'同強度で上限' + ex.repHigh + '回を目指す'};
+    }
+    if(c.maxW === null){
+      return {chip:'neutral', label:'重量未記録', detail:'目標レップ範囲内で組める重量から開始'};
+    }
+    if(c.state === 'up') return {chip:'up', label:'+' + ex.inc + 'kg', detail:'次回 ' + round1(c.maxW + ex.inc) + 'kg × ' + ex.repLow + '回から'};
+    if(c.state === 'warn') return {chip:'warn', label:'同重量で継続', detail:c.maxW + 'kg のまま下限' + ex.repLow + '回を目指す'};
+    return {chip:'hold', label:'同重量で回数アップ', detail:c.maxW + 'kg のまま上限' + ex.repHigh + '回を目指す'};
+  }
+
+  function suggestedNext(ex, lastEntry){
+    var c = classifyLast(ex, lastEntry);
+    if(c.state === 'neutral') return {weight:null, reps:null};
+    if(ex.inc === null){
+      var reps = c.state === 'up' ? ex.repHigh : (c.state === 'warn' ? ex.repLow : ex.repHigh);
+      return {weight:null, reps:reps};
+    }
+    if(c.maxW === null) return {weight:null, reps:null};
+    if(c.state === 'up') return {weight: round1(c.maxW + ex.inc), reps: ex.repLow};
+    if(c.state === 'warn') return {weight: c.maxW, reps: ex.repLow};
+    return {weight: c.maxW, reps: ex.repHigh};
+  }
+
+  function selectOptionsHtml(step, max, value, unit){
+    var html = '<option value=""></option>';
+    var n = Math.floor(max / step);
+    var current = (value === '' || value === null || value === undefined) ? null : parseFloat(value);
+    for(var i = 1; i <= n; i++){
+      var v = round1(i * step);
+      var sel = (current !== null && Math.abs(v - current) < 0.001) ? ' selected' : '';
+      html += '<option value="' + v + '"' + sel + '>' + v + unit + '</option>';
+    }
+    return html;
+  }
+
+  function selectHtml(cls, value, step, max, unit, ariaLabel){
+    return '<select class="' + cls + ' set-select" aria-label="' + ariaLabel + '">' +
+      selectOptionsHtml(step, max, value, unit) +
+    '</select>';
+  }
+
+  function setInputsHtml(ex, lastEntry){
+    var bodyweight = (ex.inc === null);
+    var sug = suggestedNext(ex, lastEntry);
+    var repStep = 1, repMax = 30;
+    var weightStep = bodyweight ? 1 : (ex.inc || 1.25);
+    var weightMax = 300;
+    var html = '';
+    for(var i = 0; i < ex.sets; i++){
+      var wVal = (sug.weight !== null && sug.weight !== undefined) ? sug.weight : '';
+      var rVal = (sug.reps !== null && sug.reps !== undefined) ? sug.reps : '';
+      if(bodyweight){
+        html += '<div class="set-unit" data-set-idx="' + i + '">' +
+          '<span class="set-label">Set ' + (i+1) + '</span>' +
+          '<span class="fields">' + selectHtml('r-input', rVal, repStep, repMax, '回', '回数') + '</span>' +
+        '</div>';
+      } else {
+        html += '<div class="set-unit" data-set-idx="' + i + '">' +
+          '<span class="set-label">Set ' + (i+1) + '</span>' +
+          '<span class="fields">' + selectHtml('w-input', wVal, weightStep, weightMax, 'kg', '重量') + selectHtml('r-input', rVal, repStep, repMax, '回', '回数') + '</span>' +
+        '</div>';
+      }
+    }
+    return html;
+  }
+
+  function historyRowsHtml(exId){
+    var entries = getEntries(exId);
+    if(entries.length === 0){
+      return '<div class="empty-history">まだ記録がありません</div>';
+    }
+    var indexed = entries.map(function(entry, idx){ return {entry:entry, idx:idx}; });
+    var recent = indexed.slice().reverse().slice(0, 5);
+    var rows = recent.map(function(item){
+      var entry = item.entry;
+      var setsStr = entry.sets.map(function(s){
+        if(!isNaN(s.weight)){ return s.weight + 'kg×' + (isNaN(s.reps) ? '—' : s.reps); }
+        return (isNaN(s.reps) ? '—' : s.reps) + '回';
+      }).join(' / ');
+      return '<tr><td>' + entry.date + '</td><td>' + setsStr + '</td>' +
+        '<td class="del-cell"><button type="button" class="delete-entry" data-ex-id="' + exId + '" data-idx="' + item.idx + '" aria-label="この記録を削除">削除</button></td></tr>';
+    }).join('');
+    return '<div class="history-wrap"><table class="history"><thead><tr><th>日付</th><th>セット内容</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>';
+  }
+
+  function muscleTagsHtml(poseKey){
+    var p = POSES[poseKey];
+    if(!p || !p.muscles) return '';
+    return '<span class="muscle-tags">' + p.muscles.map(function(m, i){
+      return '<span class="muscle-tag' + (i === 0 ? ' primary' : '') + '">' + m + '</span>';
+    }).join('') + '</span>';
+  }
+
+  function renderExRow(ex){
+    var last = getLastEntry(ex.id);
+    var s = computeSuggestion(ex, last);
+    return '<div class="ex-row' + (ex.main ? ' main' : '') + '" data-ex-id="' + ex.id + '" data-sets="' + ex.sets + '" data-inc="' + (ex.inc === null ? '' : ex.inc) + '">' +
+      '<div class="ex-row-top" tabindex="0" role="button" aria-expanded="false">' +
+        '<div class="ex-icon">' + renderIcon(ex.pose) + '<span class="ex-num-badge">' + String(ex.order).padStart(2,'0') + '</span></div>' +
+        '<span class="ex-info"><span class="ex-name">' + (ex.main ? '<span class="main-tag">MAIN</span>' : '') + ex.name + '</span>' +
+        (ex.note ? '<span class="ex-note">' + ex.note + '</span>' : '') +
+        muscleTagsHtml(ex.pose) + '</span>' +
+        '<span class="ex-target-wrap"><span class="ex-target">' + targetStr(ex) + (ex.inc !== null ? '<span class="inc">+' + ex.inc + 'kgずつ</span>' : '') + '</span><span class="chevron" aria-hidden="true">▸</span></span>' +
+      '</div>' +
+      formPanelHtml(ex.pose, ex.name) +
+      '<div class="ex-log">' +
+        '<div class="set-inputs">' + setInputsHtml(ex, last) + '</div>' +
+        '<div class="ex-suggestion"><span class="chip ' + s.chip + '">' + s.label + '</span><span>' + s.detail + '</span></div>' +
+        '<button type="button" class="history-toggle" data-ex-id="' + ex.id + '">履歴を見る</button>' +
+        '<div class="history-panel" hidden></div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function refreshDay(day){
+    var container = document.querySelector('.ex-list[data-list="' + day + '"]');
+    var items = EXERCISES.filter(function(e){ return e.day === day; }).sort(function(a,b){ return a.order - b.order; });
+    container.innerHTML = items.map(renderExRow).join('');
+  }
+
+  function renderLists(){
+    ["full","chest","back","leg"].forEach(refreshDay);
+  }
+
+  function initTabs(){
+    var buttons = document.querySelectorAll('.tabbar button');
+    buttons.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        buttons.forEach(function(b){ b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+        btn.classList.add('active'); btn.setAttribute('aria-selected','true');
+        document.querySelectorAll('.day-panel').forEach(function(p){ p.classList.remove('active'); });
+        document.getElementById('panel-' + btn.dataset.day).classList.add('active');
+      });
+    });
+  }
+
+  function initHistoryToggles(){
+    document.addEventListener('click', function(e){
+      var btn = e.target.closest('.history-toggle');
+      if(!btn) return;
+      var panel = btn.nextElementSibling;
+      var exId = btn.dataset.exId;
+      if(panel.hidden){
+        panel.innerHTML = historyRowsHtml(exId);
+        panel.hidden = false;
+        btn.textContent = '履歴を閉じる';
+      } else {
+        panel.hidden = true;
+        btn.textContent = '履歴を見る';
+      }
+    });
+  }
+
+  function toggleFormPanel(head){
+    var panel = head.nextElementSibling;
+    if(!panel || !panel.classList.contains('form-panel')) return;
+    var expanded = head.getAttribute('aria-expanded') === 'true';
+    panel.hidden = expanded;
+    head.setAttribute('aria-expanded', String(!expanded));
+    var chevron = head.querySelector('.chevron');
+    if(chevron){ chevron.textContent = expanded ? '▸' : '▾'; }
+  }
+
+  // ---- progress tab: cross-day exercise merging + charts ----
+  function exerciseDefsByName(){
+    var map = {};
+    EXERCISES.forEach(function(ex){
+      if(!map[ex.name]){
+        map[ex.name] = {name:ex.name, pose:ex.pose, inc:ex.inc, repLow:ex.repLow, repHigh:ex.repHigh, ids:[ex.id], main:!!ex.main};
+      } else {
+        map[ex.name].ids.push(ex.id);
+        if(ex.main){ map[ex.name].main = true; }
+      }
+    });
+    return map;
+  }
+
+  function orderedExerciseNames(){
+    var seen = {};
+    var ordered = [];
+    EXERCISES.forEach(function(ex){
+      if(!seen[ex.name]){ seen[ex.name] = true; ordered.push(ex.name); }
+    });
+    return ordered;
+  }
+
+  function mergedEntries(name){
+    var defs = exerciseDefsByName();
+    var def = defs[name];
+    if(!def) return [];
+    var log = loadLog();
+    var all = [];
+    def.ids.forEach(function(id){
+      (log[id] || []).forEach(function(entry){ all.push(entry); });
+    });
+    all.sort(function(a, b){ return a.date < b.date ? -1 : (a.date > b.date ? 1 : 0); });
+    return all;
+  }
+
+  function entryMetric(entry, bodyweight){
+    var weights = entry.sets.map(function(s){ return s.weight; }).filter(function(w){ return !isNaN(w); });
+    var reps = entry.sets.map(function(s){ return s.reps; }).filter(function(r){ return !isNaN(r); });
+    if(bodyweight){
+      return reps.length ? Math.max.apply(null, reps) : null;
+    }
+    return weights.length ? Math.max.apply(null, weights) : null;
+  }
+
+  function allLogDatesSet(){
+    var log = loadLog();
+    var set = {};
+    Object.keys(log).forEach(function(exId){
+      log[exId].forEach(function(entry){ set[entry.date] = true; });
+    });
+    return set;
+  }
+
+  function isoDate(d){
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  function startOfWeekMonday(d){
+    var day = d.getDay();
+    var diff = (day === 0 ? -6 : 1 - day);
+    var monday = new Date(d.getFullYear(), d.getMonth(), d.getDate() + diff);
+    return monday;
+  }
+
+  function buildLineChart(points, opts){
+    opts = opts || {};
+    var compact = !!opts.compact;
+    var w = compact ? 220 : 600;
+    var h = compact ? 56 : 200;
+    var padL = compact ? 4 : 38;
+    var padR = compact ? 4 : 12;
+    var padT = compact ? 6 : 16;
+    var padB = compact ? 6 : 26;
+    var innerW = w - padL - padR;
+    var innerH = h - padT - padB;
+
+    if(points.length === 0){
+      if(compact){
+        return '<svg class="chart-svg" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none" aria-hidden="true">' +
+          '<line x1="' + padL + '" y1="' + (h / 2) + '" x2="' + (w - padR) + '" y2="' + (h / 2) + '" class="chart-grid"></line></svg>';
+      }
+      return '<svg class="chart-svg" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none" role="img" aria-label="記録なし">' +
+        '<text x="' + (w / 2) + '" y="' + (h / 2) + '" text-anchor="middle" class="chart-empty-label">まだ記録がありません</text></svg>';
+    }
+
+    var ys = points.map(function(p){ return p.y; });
+    var minY = Math.min.apply(null, ys);
+    var maxY = Math.max.apply(null, ys);
+    if(minY === maxY){ minY -= 1; maxY += 1; }
+    var pad = (maxY - minY) * 0.18;
+    minY -= pad; maxY += pad;
+    if(minY < 0 && ys.every(function(y){ return y >= 0; })){ minY = 0; }
+
+    var n = points.length;
+    function xAt(i){ return n === 1 ? padL + innerW / 2 : padL + (innerW * i / (n - 1)); }
+    function yAt(v){ return padT + innerH - ((v - minY) / (maxY - minY)) * innerH; }
+
+    var last = points[n - 1];
+    var lastX = xAt(n - 1), lastY = yAt(last.y);
+    var dotR = compact ? 3 : 4.5;
+
+    if(n === 1){
+      var svgSingle = '<svg class="chart-svg" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none" role="img" aria-label="推移グラフ">';
+      if(!compact){
+        for(var g0 = 0; g0 <= 3; g0++){
+          var gy0 = padT + innerH * g0 / 3;
+          svgSingle += '<line x1="' + padL + '" y1="' + gy0 + '" x2="' + (w - padR) + '" y2="' + gy0 + '" class="chart-grid"></line>';
+        }
+      }
+      svgSingle += '<circle cx="' + lastX + '" cy="' + lastY + '" r="' + dotR + '" class="chart-dot"></circle>';
+      if(!compact){
+        svgSingle += '<text x="' + lastX + '" y="' + (lastY - 12) + '" text-anchor="middle" class="chart-single-label">' + last.y + '</text>';
+        svgSingle += '<text x="' + padL + '" y="' + (h - 6) + '" class="chart-axis-label">' + (last.label || '') + '</text>';
+      }
+      svgSingle += '</svg>';
+      return svgSingle;
+    }
+
+    var linePts = points.map(function(p, i){ return xAt(i) + ',' + yAt(p.y); }).join(' ');
+    var areaPath = 'M' + xAt(0) + ',' + (padT + innerH) + ' L' + points.map(function(p, i){ return xAt(i) + ',' + yAt(p.y); }).join(' L') + ' L' + xAt(n - 1) + ',' + (padT + innerH) + ' Z';
+
+    var svg = '<svg class="chart-svg" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none" role="img" aria-label="推移グラフ">';
+    if(!compact){
+      for(var g = 0; g <= 3; g++){
+        var gy = padT + innerH * g / 3;
+        svg += '<line x1="' + padL + '" y1="' + gy + '" x2="' + (w - padR) + '" y2="' + gy + '" class="chart-grid"></line>';
+      }
+    }
+    svg += '<path d="' + areaPath + '" class="chart-area"></path>';
+    svg += '<polyline points="' + linePts + '" class="chart-line"></polyline>';
+    svg += '<circle cx="' + lastX + '" cy="' + lastY + '" r="' + dotR + '" class="chart-dot"></circle>';
+    if(!compact){
+      svg += '<text x="' + padL + '" y="' + (h - 6) + '" class="chart-axis-label">' + (points[0].label || '') + '</text>';
+      svg += '<text x="' + (w - padR) + '" y="' + (h - 6) + '" text-anchor="end" class="chart-axis-label">' + (last.label || '') + '</text>';
+    }
+    svg += '</svg>';
+    return svg;
+  }
+
+  var currentChartExercise = null;
+
+  function pointsForExercise(name){
+    var defs = exerciseDefsByName();
+    var def = defs[name];
+    if(!def) return {points:[], bodyweight:false};
+    var bodyweight = def.inc === null;
+    var entries = mergedEntries(name);
+    var points = entries.map(function(entry){
+      var v = entryMetric(entry, bodyweight);
+      if(v === null) return null;
+      var d = parseIsoDate(entry.date);
+      return {y:v, label:(d.getMonth() + 1) + '/' + d.getDate(), date:entry.date};
+    }).filter(function(p){ return p !== null; });
+    return {points:points, bodyweight:bodyweight};
+  }
+
+  function renderMainChart(name){
+    var wrap = document.getElementById('chart-wrap');
+    var summaryEl = document.getElementById('chart-summary');
+    if(!wrap) return;
+    var data = pointsForExercise(name);
+    wrap.innerHTML = buildLineChart(data.points);
+
+    if(summaryEl){
+      if(data.points.length === 0){
+        summaryEl.innerHTML = '<span class="chart-summary-empty">まだ記録がありません</span>';
+      } else {
+        var first = data.points[0].y;
+        var last = data.points[data.points.length - 1].y;
+        var delta = round1(last - first);
+        var unit = data.bodyweight ? '回' : 'kg';
+        var deltaStr = (delta > 0 ? '+' : '') + delta + unit;
+        var deltaClass = delta > 0 ? 'up' : (delta < 0 ? 'warn' : 'neutral');
+        summaryEl.innerHTML =
+          '<span class="chart-current"><span class="chart-current-value">' + last + unit + '</span><span class="chart-current-label">現在の記録</span></span>' +
+          (data.points.length > 1 ? '<span class="chip ' + deltaClass + '">' + deltaStr + '</span>' : '');
+      }
+    }
+  }
+
+  function populateExerciseSelect(){
+    var sel = document.getElementById('chart-exercise-select');
+    if(!sel) return;
+    var ordered = orderedExerciseNames();
+    if(!sel.dataset.populated){
+      sel.innerHTML = ordered.map(function(name){ return '<option value="' + name + '">' + name + '</option>'; }).join('');
+      sel.dataset.populated = '1';
+      sel.addEventListener('change', function(){
+        currentChartExercise = sel.value;
+        renderMainChart(currentChartExercise);
+        renderMiniCharts();
+      });
+    }
+    if(!currentChartExercise){
+      var best = ordered[0], bestCount = -1;
+      ordered.forEach(function(name){
+        var c = mergedEntries(name).length;
+        if(c > bestCount){ bestCount = c; best = name; }
+      });
+      currentChartExercise = bestCount > 0 ? best : ordered[0];
+    }
+    sel.value = currentChartExercise;
+  }
+
+  var MINI_CHART_NAMES = ['スクワット', 'ベンチプレス', '懸垂', 'デッドリフト'];
+
+  function renderMiniCharts(){
+    var grid = document.getElementById('mini-chart-grid');
+    if(!grid) return;
+    var defs = exerciseDefsByName();
+    grid.innerHTML = MINI_CHART_NAMES.map(function(name){
+      var def = defs[name];
+      if(!def) return '';
+      var data = pointsForExercise(name);
+      var unit = data.bodyweight ? '回' : 'kg';
+      var current = data.points.length ? data.points[data.points.length - 1].y : null;
+      var delta = data.points.length > 1 ? round1(data.points[data.points.length - 1].y - data.points[0].y) : 0;
+      var deltaStr = data.points.length > 1 ? ((delta > 0 ? '+' : '') + delta + unit) : '';
+      var deltaClass = delta > 0 ? 'up' : (delta < 0 ? 'down' : '');
+      var active = name === currentChartExercise ? ' active' : '';
+      return '<button type="button" class="mini-chart-card' + active + '" data-ex-name="' + name + '">' +
+        '<span class="mini-chart-head"><span class="mini-chart-name">' + name + '</span>' +
+          (deltaStr ? '<span class="mini-chart-delta ' + deltaClass + '">' + deltaStr + '</span>' : '') + '</span>' +
+        '<span class="mini-chart-svg">' + buildLineChart(data.points, {compact:true}) + '</span>' +
+        '<span class="mini-chart-current">' + (current !== null ? current + unit : '記録なし') + '</span>' +
+      '</button>';
+    }).join('');
+  }
+
+  function initMiniChartClicks(){
+    document.addEventListener('click', function(e){
+      var card = e.target.closest('.mini-chart-card');
+      if(!card) return;
+      var name = card.dataset.exName;
+      currentChartExercise = name;
+      var sel = document.getElementById('chart-exercise-select');
+      if(sel){ sel.value = name; }
+      renderMainChart(name);
+      renderMiniCharts();
+    });
+  }
+
+  function renderProgressStats(){
+    var el = document.getElementById('progress-stats');
+    if(!el) return;
+    var log = loadLog();
+    var dateSet = allLogDatesSet();
+    var sessions = Object.keys(dateSet).length;
+    var totalVol = 0;
+    Object.keys(log).forEach(function(exId){
+      log[exId].forEach(function(entry){
+        entry.sets.forEach(function(s){
+          if(!isNaN(s.weight) && !isNaN(s.reps)){ totalVol += s.weight * s.reps; }
+        });
+      });
+    });
+    var startIso = firstLoggedDate();
+    var daysLabel = '—';
+    if(startIso){
+      var start = parseIsoDate(startIso);
+      var today0 = new Date(); today0.setHours(0, 0, 0, 0); start.setHours(0, 0, 0, 0);
+      daysLabel = (Math.round((today0 - start) / 86400000) + 1) + '日目';
+    }
+    var stats = [
+      {label:'総セッション数', value:sessions + '回'},
+      {label:'総挙上量', value:Math.round(totalVol).toLocaleString('ja-JP') + 'kg'},
+      {label:'継続', value:daysLabel}
+    ];
+    el.innerHTML = stats.map(function(s){
+      return '<div class="stat-card"><span class="stat-card-label">' + s.label + '</span><span class="stat-card-value">' + s.value + '</span></div>';
+    }).join('');
+  }
+
+  function renderWeekTracker(){
+    var el = document.getElementById('week-tracker');
+    if(!el) return;
+    var today = new Date(); today.setHours(0, 0, 0, 0);
+    var todayIso = isoDate(today);
+    var mon = startOfWeekMonday(today);
+    var days = [
+      {label:'月', date:isoDate(mon)},
+      {label:'水', date:isoDate(new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + 2))},
+      {label:'金', date:isoDate(new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + 4))}
+    ];
+    var dateSet = allLogDatesSet();
+    var doneCount = 0;
+    var dotsHtml = days.map(function(d){
+      var done = !!dateSet[d.date];
+      if(done){ doneCount++; }
+      var state = done ? 'done' : (d.date < todayIso ? 'missed' : (d.date === todayIso ? 'today' : ''));
+      return '<div class="week-dot ' + state + '"><span class="wd-label">' + d.label + '</span><span class="wd-mark">' + (done ? '✓' : '') + '</span></div>';
+    }).join('');
+    el.innerHTML = '<div class="week-tracker-head"><span class="form-label">今週の実施（月・水・金）</span><span class="week-count">' + doneCount + ' / 3</span></div>' +
+      '<div class="week-dots">' + dotsHtml + '</div>';
+  }
+
+  function renderProgress(){
+    renderProgressStats();
+    renderWeekTracker();
+    populateExerciseSelect();
+    renderMainChart(currentChartExercise);
+    renderMiniCharts();
+  }
+
+  function showPrToast(names){
+    var uniq = names.filter(function(n, i){ return names.indexOf(n) === i; });
+    var toast = document.getElementById('pr-toast');
+    if(!toast){
+      toast = document.createElement('div');
+      toast.id = 'pr-toast';
+      toast.className = 'pr-toast';
+      toast.setAttribute('role', 'status');
+      document.body.appendChild(toast);
+    }
+    toast.textContent = '🎉 自己ベスト更新: ' + uniq.join(' / ');
+    toast.classList.remove('show');
+    void toast.offsetWidth;
+    toast.classList.add('show');
+    clearTimeout(toast._hideTimer);
+    toast._hideTimer = setTimeout(function(){ toast.classList.remove('show'); }, 3200);
+  }
+
+  function initDeleteHandlers(){
+    document.addEventListener('click', function(e){
+      var btn = e.target.closest('.delete-entry');
+      if(!btn) return;
+
+      // Native confirm() dialogs can be silently blocked inside a sandboxed
+      // artifact iframe (the call returns without ever showing a prompt), which
+      // made this button look broken. Confirm inline instead: first tap arms it,
+      // a second tap within a few seconds actually deletes.
+      if(btn.dataset.confirm !== '1'){
+        btn.dataset.confirm = '1';
+        btn.textContent = '本当に削除？';
+        btn.classList.add('confirming');
+        clearTimeout(btn._confirmTimer);
+        btn._confirmTimer = setTimeout(function(){
+          btn.dataset.confirm = '0';
+          btn.textContent = '削除';
+          btn.classList.remove('confirming');
+        }, 4000);
+        return;
+      }
+      clearTimeout(btn._confirmTimer);
+
+      var exId = btn.dataset.exId;
+      var idx = parseInt(btn.dataset.idx, 10);
+      if(deleteLogEntry(exId, idx)){
+        var ex = EXERCISES.find(function(x){ return x.id === exId; });
+        if(ex){ refreshDay(ex.day); }
+        renderPhaseSchedule();
+        renderProgress();
+        markNeedsBackup();
+        updateRecoverBanner();
+        syncToServer();
+      }
+    });
+  }
+
+  function initFormToggles(){
+    document.addEventListener('click', function(e){
+      var head = e.target.closest('.ex-row-top');
+      if(!head) return;
+      toggleFormPanel(head);
+    });
+    document.addEventListener('keydown', function(e){
+      if(e.key !== 'Enter' && e.key !== ' ') return;
+      var head = e.target.closest('.ex-row-top');
+      if(!head) return;
+      e.preventDefault();
+      toggleFormPanel(head);
+    });
+  }
+
+  function initDates(){
+    var today = new Date().toISOString().slice(0,10);
+    document.querySelectorAll('.day-toolbar input[type="date"]').forEach(function(input){
+      input.value = today;
+    });
+  }
+
+  function initSave(){
+    document.querySelectorAll('[data-save]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var day = btn.dataset.save;
+        var dateInput = document.getElementById('date-' + day);
+        var date = dateInput.value || new Date().toISOString().slice(0,10);
+        var rows = document.querySelectorAll('.ex-list[data-list="' + day + '"] .ex-row');
+        var log = loadLog();
+        var savedAny = false;
+        var prNames = [];
+
+        rows.forEach(function(row){
+          var exId = row.dataset.exId;
+          var ex = EXERCISES.find(function(x){ return x.id === exId; });
+          var units = row.querySelectorAll('.set-unit');
+          var sets = [];
+          units.forEach(function(u){
+            var wEl = u.querySelector('.w-input');
+            var rEl = u.querySelector('.r-input');
+            var w = wEl ? parseFloat(wEl.value) : NaN;
+            var r = rEl ? parseFloat(rEl.value) : NaN;
+            if(!isNaN(w) || !isNaN(r)){ sets.push({weight:w, reps:r}); }
+          });
+          if(sets.length > 0){
+            if(ex){
+              var bodyweight = ex.inc === null;
+              var prevEntries = mergedEntries(ex.name);
+              var prevMax = prevEntries.reduce(function(m, entry){
+                var v = entryMetric(entry, bodyweight);
+                return (v !== null && v > m) ? v : m;
+              }, -Infinity);
+              var thisMax = sets.reduce(function(m, s){
+                var v = bodyweight ? s.reps : s.weight;
+                return (!isNaN(v) && v > m) ? v : m;
+              }, -Infinity);
+              if(prevEntries.length > 0 && thisMax > prevMax){ prNames.push(ex.name); }
+            }
+            log[exId] = log[exId] || [];
+            var sameDayIdx = log[exId].findIndex(function(entry){ return entry.date === date; });
+            if(sameDayIdx !== -1){
+              log[exId][sameDayIdx] = {date:date, sets:sets};
+            } else {
+              log[exId].push({date:date, sets:sets});
+            }
+            savedAny = true;
+          }
+        });
+
+        if(savedAny){
+          saveLog(log);
+          refreshDay(day);
+          renderPhaseSchedule();
+          renderProgress();
+          markNeedsBackup();
+          updateRecoverBanner();
+          syncToServer();
+          var status = document.getElementById('status-' + day);
+          status.classList.add('show');
+          setTimeout(function(){ status.classList.remove('show'); }, 2200);
+          if(prNames.length){ showPrToast(prNames); }
+        }
+      });
+    });
+  }
+
+  // ---- profile (weight / height / age) ----
+  var PROFILE_KEY = 'atsumi-keikaku-profile-v1';
+  var DEFAULT_PROFILE = {weight:66, height:175.8, age:27};
+
+  function loadProfile(){
+    try{
+      var raw = localStorage.getItem(PROFILE_KEY);
+      return raw ? JSON.parse(raw) : Object.assign({}, DEFAULT_PROFILE);
+    }catch(e){ return Object.assign({}, DEFAULT_PROFILE); }
+  }
+  function saveProfile(p){
+    try{ localStorage.setItem(PROFILE_KEY, JSON.stringify(p)); }catch(e){}
+  }
+
+  function updateBmi(){
+    var p = loadProfile();
+    var hM = p.height / 100;
+    var bmi = hM > 0 ? p.weight / (hM * hM) : 0;
+    document.getElementById('p-bmi').textContent = bmi ? bmi.toFixed(1) : '—';
+  }
+
+  function updateNutritionCallout(){
+    var p = loadProfile();
+    var lo = Math.round(p.weight * 1.6);
+    var hi = Math.round(p.weight * 2.2);
+    var el = document.getElementById('protein-range');
+    if(el){ el.textContent = lo + '〜' + hi + 'g/日'; }
+    var pEl = document.getElementById('p-protein');
+    if(pEl){ pEl.textContent = lo + '〜' + hi + 'g'; }
+  }
+
+  function initProfile(){
+    var profile = loadProfile();
+    var wInput = document.getElementById('p-weight');
+    var hInput = document.getElementById('p-height');
+    var aInput = document.getElementById('p-age');
+    wInput.value = profile.weight;
+    hInput.value = profile.height;
+    aInput.value = profile.age;
+
+    function persist(){
+      var current = loadProfile();
+      var w = parseFloat(wInput.value); var h = parseFloat(hInput.value); var a = parseInt(aInput.value, 10);
+      var p = {
+        weight: isNaN(w) ? current.weight : w,
+        height: isNaN(h) ? current.height : h,
+        age: isNaN(a) ? current.age : a
+      };
+      saveProfile(p);
+      updateBmi();
+      updateNutritionCallout();
+      markNeedsBackup();
+      syncToServer();
+    }
+    [wInput, hInput, aInput].forEach(function(inp){ inp.addEventListener('change', persist); });
+    updateBmi();
+    updateNutritionCallout();
+  }
+
+  // ---- phase schedule (based on first logged date) ----
+  function parseIsoDate(s){
+    var parts = s.split('-');
+    return new Date(+parts[0], +parts[1] - 1, +parts[2]);
+  }
+  function addMonths(d, n){
+    var r = new Date(d.getTime());
+    r.setMonth(r.getMonth() + n);
+    return r;
+  }
+  function fmtDateJp(d){
+    return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
+  }
+  function firstLoggedDate(){
+    var log = loadLog();
+    var allDates = [];
+    Object.keys(log).forEach(function(exId){
+      log[exId].forEach(function(entry){ allDates.push(entry.date); });
+    });
+    if(allDates.length === 0) return null;
+    allDates.sort();
+    return allDates[0]; // ISO string
+  }
+
+  var PHASE1_OVERRIDE_KEY = 'atsumi-keikaku-phase1-start-v1';
+  function loadPhase1Override(){
+    try{ return localStorage.getItem(PHASE1_OVERRIDE_KEY); }catch(e){ return null; }
+  }
+  function savePhase1Override(iso){
+    try{
+      if(iso){ localStorage.setItem(PHASE1_OVERRIDE_KEY, iso); }
+      else{ localStorage.removeItem(PHASE1_OVERRIDE_KEY); }
+    }catch(e){}
+  }
+  function effectiveStartDateIso(){
+    return loadPhase1Override() || firstLoggedDate();
+  }
+
+  function renderPhaseSchedule(){
+    var sub1 = document.getElementById('phase1-sub');
+    var sub2 = document.getElementById('phase2-sub');
+    var startIso = effectiveStartDateIso();
+    var startInput = document.getElementById('phase1-start-input');
+    if(startInput && document.activeElement !== startInput){ startInput.value = startIso || ''; }
+    if(!startIso){
+      sub1.textContent = '週3回、同じ8種目で体の扱い方を学ぶ';
+      sub2.textContent = '月:胸 / 水:背中 / 金:脚';
+      return;
+    }
+    var first = parseIsoDate(startIso);
+    var phase2Start = addMonths(first, 2);
+    var phase1End = new Date(phase2Start.getTime());
+    phase1End.setDate(phase1End.getDate() - 1);
+    sub1.textContent = fmtDateJp(first) + ' 〜 ' + fmtDateJp(phase1End);
+    sub2.textContent = fmtDateJp(phase2Start) + '〜／月:胸 水:背中 金:脚';
+  }
+
+  function initPhaseOverride(){
+    var startInput = document.getElementById('phase1-start-input');
+    var resetBtn = document.getElementById('phase1-reset');
+    var toggle = document.getElementById('phase1-edit-toggle');
+    var row = document.getElementById('phase1-edit-row');
+    startInput.addEventListener('change', function(){
+      savePhase1Override(startInput.value || null);
+      renderPhaseSchedule();
+      syncToServer();
+    });
+    resetBtn.addEventListener('click', function(){
+      savePhase1Override(null);
+      renderPhaseSchedule();
+      syncToServer();
+    });
+    toggle.addEventListener('click', function(){
+      var expanded = toggle.getAttribute('aria-expanded') === 'true';
+      row.hidden = expanded;
+      toggle.setAttribute('aria-expanded', String(!expanded));
+    });
+  }
+
+  function initUsageToggle(){
+    var toggle = document.getElementById('usage-toggle');
+    var panel = document.getElementById('usage-panel');
+    if(!toggle || !panel) return;
+    toggle.addEventListener('click', function(){
+      var expanded = toggle.getAttribute('aria-expanded') === 'true';
+      panel.hidden = expanded;
+      toggle.setAttribute('aria-expanded', String(!expanded));
+      toggle.textContent = expanded ? '使い方を見る' : '使い方を閉じる';
+    });
+  }
+
+  renderLists();
+  initTabs();
+  initHistoryToggles();
+  initDeleteHandlers();
+  initFormToggles();
+  initDates();
+  initSave();
+  initProfile();
+  initPhaseOverride();
+  renderPhaseSchedule();
+  initMiniChartClicks();
+  initUsageToggle();
+  initBackupButton();
+  initRestoreInput();
+  initRecoverBanner();
+  renderProgress();
+  renderSyncStatus();
+  hydrateFromServer();
+})();
+</script>
