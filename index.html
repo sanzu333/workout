@@ -333,6 +333,152 @@
     line-height:1;
   }
   .icon-btn:hover{ color:var(--accent); }
+  .menu-edit-toggle{ margin:2px 0 14px; }
+  .menu-edit-panel[hidden]{ display:none; }
+  .menu-edit-panel{
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    background:var(--surface);
+    padding:14px 16px;
+    margin-bottom:18px;
+  }
+  .menu-edit-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:9px 0;
+    border-bottom:1px solid var(--border);
+  }
+  .menu-edit-row:last-child{ border-bottom:none; }
+  .menu-edit-name{ flex:1; font-weight:700; font-size:.88rem; min-width:0; }
+  .menu-edit-btns{ display:flex; gap:2px; flex:none; }
+  .menu-edit-btns button{
+    background:none;
+    border:none;
+    color:var(--text-dim);
+    font-size:.9rem;
+    cursor:pointer;
+    padding:6px 8px;
+    border-radius:6px;
+    line-height:1;
+  }
+  .menu-edit-btns button:hover{ color:var(--accent); background:var(--surface-2); }
+  .menu-edit-btns button:disabled{ opacity:.3; cursor:default; }
+  .menu-edit-btns button:disabled:hover{ color:var(--text-dim); background:none; }
+  .menu-edit-remove{ font-size:.78rem !important; font-family:var(--mono); }
+  .menu-edit-remove.confirming{ color:var(--danger) !important; font-weight:700; }
+  .menu-edit-empty{ color:var(--text-dim); font-size:.86rem; padding:8px 0; }
+  .menu-add-toggle{ margin-top:12px; }
+  .menu-add-form{
+    margin-top:12px;
+    padding-top:14px;
+    border-top:1px dashed var(--border);
+  }
+  .menu-add-form[hidden]{ display:none; }
+  .menu-add-form .field-row{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:12px;
+  }
+  .menu-add-form .field{ flex:1; min-width:120px; }
+  .menu-add-form label{
+    display:block;
+    font-family:var(--mono);
+    font-size:.66rem;
+    letter-spacing:.04em;
+    color:var(--text-dim);
+    margin-bottom:4px;
+  }
+  .menu-add-form input[type="text"],
+  .menu-add-form input[type="number"],
+  .menu-add-form select{
+    width:100%;
+    font-family:var(--display);
+    font-size:16px;
+    padding:8px 10px;
+    border-radius:6px;
+    border:1px solid var(--border);
+    background:var(--bg);
+    color:var(--text);
+  }
+  .menu-add-form .checkbox-field{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin-bottom:12px;
+    font-size:.86rem;
+  }
+  .menu-add-actions{ display:flex; gap:10px; align-items:center; }
+  .menu-hidden-list{
+    margin-top:12px;
+    padding-top:12px;
+    border-top:1px dashed var(--border);
+  }
+  .menu-hidden-list[hidden]{ display:none; }
+  .menu-hidden-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    padding:5px 0;
+    font-size:.84rem;
+    color:var(--text-dim);
+  }
+  .equip-add-btn{
+    font-family:var(--mono);
+    font-size:.72rem;
+    font-weight:700;
+    padding:5px 10px;
+    border-radius:999px;
+    border:1px solid var(--accent);
+    color:var(--accent);
+    background:none;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .equip-add-btn:hover{ background:var(--accent-soft); }
+  .equip-add-btn[hidden]{ display:none; }
+
+  .table-wrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); }
+  table.map{ width:100%; border-collapse:collapse; min-width:640px; font-size:.86rem; }
+  table.map th{
+    text-align:left; font-family:var(--mono); font-size:.66rem; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--text-dim); font-weight:600;
+    padding:10px 14px; border-bottom:1px solid var(--border); background:var(--surface-2);
+  }
+  table.map td{ padding:11px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
+  table.map tr:last-child td{ border-bottom:none; }
+  table.map .ex-name-cell{ font-weight:700; }
+  table.map .day-tags{ display:flex; gap:4px; flex-wrap:wrap; }
+  .day-tag{
+    font-family:var(--mono); font-size:.66rem; font-weight:600;
+    padding:2px 7px; border-radius:999px; background:var(--surface-2); color:var(--text-dim);
+    white-space:nowrap;
+  }
+  .alt-cell{ color:var(--text-dim); font-size:.84rem; }
+  .alt-cell .none{ color:var(--text-dim); opacity:.7; }
+
+  .inv-list{
+    display:flex; flex-direction:column;
+    border:1px solid var(--border); border-radius:var(--radius);
+    overflow:hidden; background:var(--surface);
+  }
+  .inv-row{
+    display:grid; grid-template-columns:1fr auto; gap:12px; align-items:start;
+    padding:12px 16px; border-bottom:1px solid var(--border);
+  }
+  .inv-row:last-child{ border-bottom:none; }
+  .inv-name{ font-weight:700; font-size:.92rem; }
+  .inv-note{ font-size:.82rem; color:var(--text-dim); margin-top:3px; max-width:56ch; }
+  .badge{
+    font-family:var(--mono); font-size:.66rem; font-weight:700;
+    padding:3px 9px; border-radius:999px; white-space:nowrap; margin-top:1px;
+  }
+  .badge.used{ background:var(--success-soft); color:var(--success); }
+  .badge.candidate{ background:var(--border); color:var(--text-dim); }
+  .inv-row-actions{ display:flex; flex-direction:column; align-items:flex-end; gap:6px; }
+
   .phase-edit{
     display:flex;
     align-items:center;
@@ -570,6 +716,14 @@
     font-weight:700;
     margin-bottom:4px;
   }
+  .equip-h3{
+    font-family:var(--display);
+    font-weight:700;
+    font-size:.94rem;
+    margin:26px 0 10px;
+    color:var(--text);
+  }
+  .equip-h3:first-of-type{ margin-top:6px; }
   .form-block p{ margin:0; color:var(--text); }
   .form-block ol, .form-block ul{ margin:0; padding-left:18px; color:var(--text); }
   .form-block li{ margin-bottom:3px; }
@@ -1114,7 +1268,7 @@
         <span class="stat-readout" id="p-protein">—</span>
       </div>
     </div>
-    <a class="header-link" href="https://claude.ai/code/artifact/2e7e3f7c-bb1f-4724-9d32-e64e85eed4b5" target="_blank" rel="noopener">設備リファレンス →</a>
+    <button type="button" class="header-link" id="equipment-jump" style="background:none;border:none;cursor:pointer;padding:0;">設備を見る →</button>
     <div class="data-status-row">
       <button type="button" class="backup-btn" id="backup-btn">📥 バックアップを保存</button>
       <label class="backup-btn" for="restore-input">📤 バックアップから復元</label>
@@ -1172,10 +1326,13 @@
       <button data-day="back" role="tab" aria-selected="false">背中の日</button>
       <button data-day="leg" role="tab" aria-selected="false">脚の日</button>
       <button data-day="progress" role="tab" aria-selected="false" class="tab-progress">📈 進捗</button>
+      <button data-day="equipment" role="tab" aria-selected="false">🔧 設備</button>
     </div>
 
     <div id="panel-full" class="day-panel active">
       <p class="day-aim">狙い: <b>全身の主要な動作パターンを学習</b>／週3回とも同一メニュー</p>
+      <button type="button" class="link-btn menu-edit-toggle" data-menu-toggle="full" aria-expanded="false">✎ メニューを編集</button>
+      <div class="menu-edit-panel" data-menu-panel="full" hidden></div>
       <div class="day-toolbar">
         <div class="date-field">
           <label for="date-full">記録日</label>
@@ -1195,6 +1352,8 @@
 
     <div id="panel-chest" class="day-panel">
       <p class="day-aim">狙い: <b>胸 &gt; 三頭 &gt; 肩</b>／ベンチプレス→インクライン→ダンベルフライの流れを軸に、胸を最優先</p>
+      <button type="button" class="link-btn menu-edit-toggle" data-menu-toggle="chest" aria-expanded="false">✎ メニューを編集</button>
+      <div class="menu-edit-panel" data-menu-panel="chest" hidden></div>
       <div class="day-toolbar">
         <div class="date-field">
           <label for="date-chest">記録日</label>
@@ -1208,12 +1367,14 @@
       <div class="ex-list" data-list="chest"></div>
       <div class="callout">
         <span class="c-label">ポイント</span>
-        プレス種目が多く肩の前面に負荷が集中しやすい配分です。肩の張りや痛みを感じたら、余力のある週に背中の日でリアレイズかケーブルフェイスプルを1種目加えてバランスを取りましょう（設備リファレンス参照）。
+        プレス種目が多く肩の前面に負荷が集中しやすい配分です。肩の張りや痛みを感じたら、余力のある週に背中の日でリアレイズかケーブルフェイスプルを1種目加えてバランスを取りましょう（🔧設備タブから追加できます）。
       </div>
     </div>
 
     <div id="panel-back" class="day-panel">
       <p class="day-aim">狙い: <b>背中 &gt; 二頭</b>／懸垂を最初、デッドリフトは2番目に固定</p>
+      <button type="button" class="link-btn menu-edit-toggle" data-menu-toggle="back" aria-expanded="false">✎ メニューを編集</button>
+      <div class="menu-edit-panel" data-menu-panel="back" hidden></div>
       <div class="day-toolbar">
         <div class="date-field">
           <label for="date-back">記録日</label>
@@ -1233,6 +1394,8 @@
 
     <div id="panel-leg" class="day-panel">
       <p class="day-aim">狙い: <b>脚 &gt; 肩</b>／スクワットを起点に、脚と腰まわりのボリュームを確保</p>
+      <button type="button" class="link-btn menu-edit-toggle" data-menu-toggle="leg" aria-expanded="false">✎ メニューを編集</button>
+      <div class="menu-edit-panel" data-menu-panel="leg" hidden></div>
       <div class="day-toolbar">
         <div class="date-field">
           <label for="date-leg">記録日</label>
@@ -1274,6 +1437,99 @@
       <p class="form-label mini-chart-label">主要種目</p>
       <div class="mini-chart-grid" id="mini-chart-grid"></div>
     </div>
+
+    <div id="panel-equipment" class="day-panel">
+      <p class="day-aim">狙い: <b>設備の空き状況に合わせてメニューを調整</b>／候補種目はワンタップでメニューに追加できます</p>
+
+      <h3 class="equip-h3">種目 → 設備対応表</h3>
+      <div class="table-wrap">
+        <table class="map">
+          <thead><tr><th>種目</th><th>使用日</th><th>主な設備</th><th>混雑時の代替</th></tr></thead>
+          <tbody>
+            <tr><td class="ex-name-cell">アブローラー</td><td><span class="day-tags"><span class="day-tag">全身</span><span class="day-tag">胸</span><span class="day-tag">背中</span><span class="day-tag">脚</span></span></td><td>小物（フリーウェイトエリア付近）</td><td class="alt-cell">ケーブルのロールアウト、プランク系</td></tr>
+            <tr><td class="ex-name-cell">スクワット</td><td><span class="day-tags"><span class="day-tag">全身</span><span class="day-tag">脚</span></span></td><td>パワーラック</td><td class="alt-cell">スミスマシン</td></tr>
+            <tr><td class="ex-name-cell">ベンチプレス</td><td><span class="day-tags"><span class="day-tag">全身</span><span class="day-tag">胸</span></span></td><td>ベンチプレス台（×3）</td><td class="alt-cell">スミスマシン → ダンベルベンチプレス</td></tr>
+            <tr><td class="ex-name-cell">懸垂</td><td><span class="day-tags"><span class="day-tag">全身</span><span class="day-tag">背中</span></span></td><td>懸垂バー</td><td class="alt-cell">ラットプルダウン（懸垂がまだ厳しい日）</td></tr>
+            <tr><td class="ex-name-cell">ダンベルショルダープレス</td><td><span class="day-tags"><span class="day-tag">全身</span><span class="day-tag">脚</span></span></td><td>ダンベル</td><td class="alt-cell">ショルダープレスマシン</td></tr>
+            <tr><td class="ex-name-cell">レッグカール</td><td><span class="day-tags"><span class="day-tag">全身</span><span class="day-tag">脚</span></span></td><td>レッグカール（マシン）</td><td class="alt-cell"><span class="none">代替なし。埋まっていたら順番を後にずらす</span></td></tr>
+            <tr><td class="ex-name-cell">バーベルカール</td><td><span class="day-tags"><span class="day-tag">全身</span><span class="day-tag">背中</span></span></td><td>パワーラックのバー</td><td class="alt-cell">プリチャーカール台</td></tr>
+            <tr><td class="ex-name-cell">ライイングトライセプスエクステンション</td><td><span class="day-tags"><span class="day-tag">全身</span><span class="day-tag">胸</span></span></td><td>ベンチ + バーベル/ダンベル</td><td class="alt-cell">ケーブルプレスダウン</td></tr>
+            <tr><td class="ex-name-cell">インクラインベンチプレス</td><td><span class="day-tags"><span class="day-tag">胸</span></span></td><td>インクラインベンチ</td><td class="alt-cell">インクラインダンベルプレス</td></tr>
+            <tr><td class="ex-name-cell">ダンベルフライ</td><td><span class="day-tags"><span class="day-tag">胸</span></span></td><td>ダンベル + ベンチ</td><td class="alt-cell">ペックフライマシン</td></tr>
+            <tr><td class="ex-name-cell">サイドレイズ</td><td><span class="day-tags"><span class="day-tag">胸</span><span class="day-tag">脚</span></span></td><td>ダンベル</td><td class="alt-cell">ケーブルでのサイドレイズ</td></tr>
+            <tr><td class="ex-name-cell">デッドリフト</td><td><span class="day-tags"><span class="day-tag">背中</span></span></td><td>パワーラック</td><td class="alt-cell"><span class="none">代替なし。空くまで順番を調整</span></td></tr>
+            <tr><td class="ex-name-cell">ラットプルダウン</td><td><span class="day-tags"><span class="day-tag">背中</span></span></td><td>マシン</td><td class="alt-cell">懸垂で追加セット</td></tr>
+            <tr><td class="ex-name-cell">ローイング</td><td><span class="day-tags"><span class="day-tag">背中</span></span></td><td>マシン</td><td class="alt-cell">ケーブルマシンでのシーテッドロー</td></tr>
+            <tr><td class="ex-name-cell">レッグプレス</td><td><span class="day-tags"><span class="day-tag">脚</span></span></td><td>マシン</td><td class="alt-cell">スクワットのセット数を増やす</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="equip-h3">設備インベントリ</h3>
+      <p class="section-intro">「候補」の種目は、右のボタンからそのままメニューに追加できます。追加後は各トレーニング日の「✎ メニューを編集」から並び替え・削除ができます。</p>
+
+      <p class="form-label">マシンエリア</p>
+      <div class="inv-list" id="equip-list-machine"></div>
+
+      <p class="form-label" style="margin-top:18px;">フリーウェイトエリア</p>
+      <div class="inv-list" id="equip-list-free"></div>
+
+      <p class="form-label" style="margin-top:18px;">有酸素マシン</p>
+      <div class="inv-list" id="equip-list-cardio"></div>
+
+      <div class="callout">
+        <span class="c-label">小物について</span>
+        アブローラーなどの小型器具はこの一覧に含まれていない場合があります。無ければケーブルのロールアウトやプランク系種目で代用できます。
+      </div>
+
+      <div class="menu-add-form" id="equip-add-form" hidden>
+        <p class="form-label" id="equip-add-form-title">種目をメニューに追加</p>
+        <div class="field-row">
+          <div class="field">
+            <label for="equip-add-name">種目名</label>
+            <input type="text" id="equip-add-name">
+          </div>
+          <div class="field">
+            <label for="equip-add-day">追加する日</label>
+            <select id="equip-add-day">
+              <option value="full">全身法</option>
+              <option value="chest">胸の日</option>
+              <option value="back">背中の日</option>
+              <option value="leg">脚の日</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="equip-add-sets">セット数</label>
+            <input type="number" id="equip-add-sets" value="3" min="1" max="10">
+          </div>
+          <div class="field">
+            <label for="equip-add-replow">目標レップ（下限）</label>
+            <input type="number" id="equip-add-replow" value="8" min="1" max="50">
+          </div>
+          <div class="field">
+            <label for="equip-add-rephigh">目標レップ（上限）</label>
+            <input type="number" id="equip-add-rephigh" value="12" min="1" max="50">
+          </div>
+        </div>
+        <div class="checkbox-field">
+          <input type="checkbox" id="equip-add-bodyweight">
+          <label for="equip-add-bodyweight" style="margin:0;">自重種目（重量の記録なし）</label>
+        </div>
+        <div class="field-row" id="equip-add-inc-row">
+          <div class="field">
+            <label for="equip-add-inc">重量の増加幅（kg）</label>
+            <input type="number" id="equip-add-inc" value="2.5" min="0.5" max="20" step="0.5">
+          </div>
+        </div>
+        <div class="menu-add-actions">
+          <button type="button" class="btn primary" id="equip-add-confirm">この内容で追加</button>
+          <button type="button" class="link-btn" id="equip-add-cancel">キャンセル</button>
+          <span class="backup-status" id="equip-add-status"></span>
+        </div>
+      </div>
+    </div>
   </section>
 
   <section>
@@ -1308,7 +1564,7 @@
   </section>
 
   <footer>
-    MASS PROTOCOL — 2026年8月作成。参考: 山岸秀匡氏の解説動画3本（初心者向けフリーウエイト/マシン論、種目順、部位分割の考え方）を土台に、既存の暫定メニューと施設の設備一覧に合わせて調整。記録データは保存のたびにこのページ自体に同期され、スマホ・PCなどどの端末から開いても同じ記録が反映されます（オフライン時はその端末に一時保存され、次にオンラインで保存した時に同期されます）。設備の詳細は<a href="https://claude.ai/code/artifact/2e7e3f7c-bb1f-4724-9d32-e64e85eed4b5" target="_blank" rel="noopener">設備リファレンス</a>を参照。
+    MASS PROTOCOL — 2026年8月作成。参考: 山岸秀匡氏の解説動画3本（初心者向けフリーウエイト/マシン論、種目順、部位分割の考え方）を土台に、既存の暫定メニューと施設の設備一覧に合わせて調整。記録データはこの端末のブラウザにのみ保存されます。他の端末と共有はされないので、機種変更などの前は「バックアップを保存」から書き出しておいてください。設備の詳細は「🔧 設備」タブを参照。
   </footer>
 
 </div>
@@ -1608,6 +1864,98 @@
     {id:"leg-side", day:"leg", order:6, name:"サイドレイズ", sets:3, repLow:12, repHigh:20, inc:1, main:false, note:"片手あたりの重量", pose:"lateral"}
   ];
 
+  // ---- user menu customization: add / remove / reorder exercises per day ----
+  // Kept as an overlay on top of the fixed EXERCISES array rather than mutating
+  // it, so removing an exercise never deletes its logged history — it just
+  // stops showing up in the day's list. custom exercises get an id that can't
+  // collide with the hardcoded ones.
+  var MENU_KEY = 'atsumi-keikaku-menu-v1';
+
+  function loadMenu(){
+    try{
+      var raw = localStorage.getItem(MENU_KEY);
+      var m = raw ? JSON.parse(raw) : {};
+      return {
+        removed: Array.isArray(m.removed) ? m.removed : [],
+        order: (m.order && typeof m.order === 'object') ? m.order : {},
+        custom: Array.isArray(m.custom) ? m.custom : []
+      };
+    }catch(e){ return {removed:[], order:{}, custom:[]}; }
+  }
+  function saveMenu(m){
+    try{ localStorage.setItem(MENU_KEY, JSON.stringify(m)); }catch(e){}
+  }
+  function allExercises(){
+    return EXERCISES.concat(loadMenu().custom);
+  }
+  function getDayExercises(day){
+    var menu = loadMenu();
+    var removedSet = {};
+    menu.removed.forEach(function(id){ removedSet[id] = true; });
+    var list = allExercises().filter(function(e){ return e.day === day && !removedSet[e.id]; });
+    var order = menu.order[day];
+    if(order && order.length){
+      var idx = {};
+      order.forEach(function(id, i){ idx[id] = i; });
+      list.sort(function(a, b){
+        var ai = idx.hasOwnProperty(a.id) ? idx[a.id] : 1000 + a.order;
+        var bi = idx.hasOwnProperty(b.id) ? idx[b.id] : 1000 + b.order;
+        return ai - bi;
+      });
+    } else {
+      list.sort(function(a, b){ return a.order - b.order; });
+    }
+    return list;
+  }
+  function removedExercisesForDay(day){
+    var menu = loadMenu();
+    var removedSet = {};
+    menu.removed.forEach(function(id){ removedSet[id] = true; });
+    return allExercises().filter(function(e){ return e.day === day && removedSet[e.id]; });
+  }
+  function removeFromMenu(exId){
+    var menu = loadMenu();
+    if(menu.removed.indexOf(exId) === -1){ menu.removed.push(exId); }
+    saveMenu(menu);
+  }
+  function restoreToMenu(exId){
+    var menu = loadMenu();
+    menu.removed = menu.removed.filter(function(id){ return id !== exId; });
+    saveMenu(menu);
+  }
+  function reorderInDay(day, exId, direction){
+    var menu = loadMenu();
+    var ids = getDayExercises(day).map(function(e){ return e.id; });
+    var i = ids.indexOf(exId);
+    var j = i + direction;
+    if(i === -1 || j < 0 || j >= ids.length) return;
+    var tmp = ids[i]; ids[i] = ids[j]; ids[j] = tmp;
+    menu.order[day] = ids;
+    saveMenu(menu);
+  }
+  function addCustomExercise(fields){
+    var menu = loadMenu();
+    var id = 'custom-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    var dayMax = allExercises().filter(function(e){ return e.day === fields.day; })
+      .reduce(function(m, e){ return Math.max(m, e.order); }, 0);
+    var ex = {
+      id: id,
+      day: fields.day,
+      order: dayMax + 1,
+      name: fields.name,
+      sets: fields.sets,
+      repLow: fields.repLow,
+      repHigh: fields.repHigh,
+      inc: fields.bodyweight ? null : fields.inc,
+      main: false,
+      note: fields.note || '',
+      pose: null
+    };
+    menu.custom.push(ex);
+    saveMenu(menu);
+    return ex;
+  }
+
   var STORAGE_KEY = 'atsumi-keikaku-log-v1';
 
   function normalizeLog(log){
@@ -1695,6 +2043,7 @@
         log: loadLog(),
         profile: loadProfile(),
         phase1Override: loadPhase1Override(),
+        menu: loadMenu(),
         exportedAt: new Date().toISOString()
       }, null, 2);
     }
@@ -1760,6 +2109,24 @@
     return result;
   }
 
+  // Additive merge for menu customizations: union removed ids and custom
+  // exercises (by id) so a restore can only bring things back, never drop
+  // a custom exercise or un-remove something that was intentionally hidden.
+  function mergeMenu(base, incoming){
+    var removed = base.removed.slice();
+    (incoming.removed || []).forEach(function(id){
+      if(removed.indexOf(id) === -1){ removed.push(id); }
+    });
+    var custom = base.custom.slice();
+    var customIds = {};
+    custom.forEach(function(ex){ customIds[ex.id] = true; });
+    (incoming.custom || []).forEach(function(ex){
+      if(!customIds[ex.id]){ custom.push(ex); customIds[ex.id] = true; }
+    });
+    var order = Object.assign({}, incoming.order || {}, base.order);
+    return {removed: removed, order: order, custom: custom};
+  }
+
   function initRestoreInput(){
     var input = document.getElementById('restore-input');
     var status = document.getElementById('backup-status');
@@ -1784,6 +2151,7 @@
         saveLog(merged);
         if(data.profile){ saveProfile(data.profile); }
         if(data.phase1Override !== undefined){ savePhase1Override(data.phase1Override); }
+        if(data.menu){ saveMenu(mergeMenu(loadMenu(), data.menu)); }
         renderLists();
         renderPhaseSchedule();
         currentChartExercise = null; // let the progress chart re-pick its default now that new data exists
@@ -1954,12 +2322,290 @@
 
   function refreshDay(day){
     var container = document.querySelector('.ex-list[data-list="' + day + '"]');
-    var items = EXERCISES.filter(function(e){ return e.day === day; }).sort(function(a,b){ return a.order - b.order; });
-    container.innerHTML = items.map(renderExRow).join('');
+    var items = getDayExercises(day);
+    container.innerHTML = items.length
+      ? items.map(renderExRow).join('')
+      : '<p class="menu-edit-empty">この日のメニューは空です。「✎ メニューを編集」から種目を追加してください。</p>';
+    renderMenuEditPanel(day);
   }
 
   function renderLists(){
     ["full","chest","back","leg"].forEach(refreshDay);
+  }
+
+  // ---- per-day menu editing: reorder / remove / restore / add a custom exercise ----
+  function menuEditRowHtml(day, ex, idx, total){
+    return '<div class="menu-edit-row">' +
+      '<span class="menu-edit-name">' + ex.name + '</span>' +
+      '<div class="menu-edit-btns">' +
+        '<button type="button" data-menu-up="' + ex.id + '" data-menu-day="' + day + '" aria-label="上へ"' + (idx === 0 ? ' disabled' : '') + '>▲</button>' +
+        '<button type="button" data-menu-down="' + ex.id + '" data-menu-day="' + day + '" aria-label="下へ"' + (idx === total - 1 ? ' disabled' : '') + '>▼</button>' +
+        '<button type="button" class="menu-edit-remove" data-menu-remove="' + ex.id + '" data-menu-day="' + day + '" data-confirm="0">外す</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function menuHiddenRowHtml(day, ex){
+    return '<div class="menu-hidden-item"><span>' + ex.name + '</span>' +
+      '<button type="button" class="link-btn" data-menu-restore="' + ex.id + '" data-menu-day="' + day + '">戻す</button></div>';
+  }
+
+  function menuAddFormHtml(day){
+    return '' +
+      '<button type="button" class="link-btn menu-add-toggle" data-menu-add-toggle="' + day + '" aria-expanded="false">＋ 種目を追加</button>' +
+      '<div class="menu-add-form" data-menu-add-form="' + day + '" hidden>' +
+        '<div class="field-row">' +
+          '<div class="field"><label for="menu-add-name-' + day + '">種目名</label><input type="text" id="menu-add-name-' + day + '"></div>' +
+        '</div>' +
+        '<div class="field-row">' +
+          '<div class="field"><label for="menu-add-sets-' + day + '">セット数</label><input type="number" id="menu-add-sets-' + day + '" value="3" min="1" max="10"></div>' +
+          '<div class="field"><label for="menu-add-replow-' + day + '">目標レップ（下限）</label><input type="number" id="menu-add-replow-' + day + '" value="8" min="1" max="50"></div>' +
+          '<div class="field"><label for="menu-add-rephigh-' + day + '">目標レップ（上限）</label><input type="number" id="menu-add-rephigh-' + day + '" value="12" min="1" max="50"></div>' +
+        '</div>' +
+        '<div class="checkbox-field">' +
+          '<input type="checkbox" id="menu-add-bodyweight-' + day + '">' +
+          '<label for="menu-add-bodyweight-' + day + '" style="margin:0;">自重種目（重量の記録なし）</label>' +
+        '</div>' +
+        '<div class="field-row" data-menu-add-inc-row="' + day + '">' +
+          '<div class="field"><label for="menu-add-inc-' + day + '">重量の増加幅（kg）</label><input type="number" id="menu-add-inc-' + day + '" value="2.5" min="0.5" max="20" step="0.5"></div>' +
+        '</div>' +
+        '<div class="menu-add-actions">' +
+          '<button type="button" class="btn primary" data-menu-add-confirm="' + day + '">追加する</button>' +
+          '<button type="button" class="link-btn" data-menu-add-cancel="' + day + '">キャンセル</button>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function renderMenuEditPanel(day){
+    var panel = document.querySelector('.menu-edit-panel[data-menu-panel="' + day + '"]');
+    if(!panel) return;
+    var items = getDayExercises(day);
+    var rows = items.length
+      ? items.map(function(ex, i){ return menuEditRowHtml(day, ex, i, items.length); }).join('')
+      : '<p class="menu-edit-empty">この日のメニューは空です。</p>';
+    var hiddenList = removedExercisesForDay(day);
+    var hiddenHtml = hiddenList.length
+      ? '<div class="menu-hidden-list" data-menu-hidden="' + day + '">' +
+          '<p class="form-label">非表示中の種目</p>' +
+          hiddenList.map(function(ex){ return menuHiddenRowHtml(day, ex); }).join('') +
+        '</div>'
+      : '';
+    panel.innerHTML = rows + menuAddFormHtml(day) + hiddenHtml;
+  }
+
+  function initMenuEditToggles(){
+    document.querySelectorAll('.menu-edit-toggle').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var day = btn.dataset.menuToggle;
+        var panel = document.querySelector('.menu-edit-panel[data-menu-panel="' + day + '"]');
+        if(!panel) return;
+        var expanded = btn.getAttribute('aria-expanded') === 'true';
+        panel.hidden = expanded;
+        btn.setAttribute('aria-expanded', String(!expanded));
+        btn.textContent = expanded ? '✎ メニューを編集' : '✕ 編集を閉じる';
+      });
+    });
+  }
+
+  function readCustomExerciseForm(suffix){
+    var nameEl = document.getElementById('menu-add-name-' + suffix) || document.getElementById('equip-add-name');
+    var name = (nameEl.value || '').trim();
+    if(!name) return null;
+    var bodyweight = document.getElementById((suffix === 'equip' ? 'equip-add-bodyweight' : 'menu-add-bodyweight-' + suffix)).checked;
+    var sets = parseInt(document.getElementById(suffix === 'equip' ? 'equip-add-sets' : 'menu-add-sets-' + suffix).value, 10);
+    var repLow = parseInt(document.getElementById(suffix === 'equip' ? 'equip-add-replow' : 'menu-add-replow-' + suffix).value, 10);
+    var repHigh = parseInt(document.getElementById(suffix === 'equip' ? 'equip-add-rephigh' : 'menu-add-rephigh-' + suffix).value, 10);
+    var inc = parseFloat(document.getElementById(suffix === 'equip' ? 'equip-add-inc' : 'menu-add-inc-' + suffix).value);
+    return {
+      name: name,
+      bodyweight: bodyweight,
+      sets: isNaN(sets) ? 3 : sets,
+      repLow: isNaN(repLow) ? 8 : repLow,
+      repHigh: isNaN(repHigh) ? 12 : repHigh,
+      inc: isNaN(inc) ? 2.5 : inc
+    };
+  }
+
+  function initMenuEditActions(){
+    document.addEventListener('click', function(e){
+      var up = e.target.closest('[data-menu-up]');
+      if(up && !up.disabled){
+        reorderInDay(up.dataset.menuDay, up.dataset.menuUp, -1);
+        refreshDay(up.dataset.menuDay);
+        markNeedsBackup();
+        return;
+      }
+      var down = e.target.closest('[data-menu-down]');
+      if(down && !down.disabled){
+        reorderInDay(down.dataset.menuDay, down.dataset.menuDown, 1);
+        refreshDay(down.dataset.menuDay);
+        markNeedsBackup();
+        return;
+      }
+      var remove = e.target.closest('[data-menu-remove]');
+      if(remove){
+        if(remove.dataset.confirm !== '1'){
+          remove.dataset.confirm = '1';
+          remove.textContent = '本当に外す？';
+          remove.classList.add('confirming');
+          clearTimeout(remove._confirmTimer);
+          remove._confirmTimer = setTimeout(function(){
+            remove.dataset.confirm = '0';
+            remove.textContent = '外す';
+            remove.classList.remove('confirming');
+          }, 4000);
+          return;
+        }
+        var day = remove.dataset.menuDay;
+        removeFromMenu(remove.dataset.menuRemove);
+        refreshDay(day);
+        markNeedsBackup();
+        return;
+      }
+      var restore = e.target.closest('[data-menu-restore]');
+      if(restore){
+        var rday = restore.dataset.menuDay;
+        restoreToMenu(restore.dataset.menuRestore);
+        refreshDay(rday);
+        markNeedsBackup();
+        return;
+      }
+      var addToggle = e.target.closest('[data-menu-add-toggle]');
+      if(addToggle){
+        var aday = addToggle.dataset.menuAddToggle;
+        var form = document.querySelector('[data-menu-add-form="' + aday + '"]');
+        if(!form) return;
+        var expanded = addToggle.getAttribute('aria-expanded') === 'true';
+        form.hidden = expanded;
+        addToggle.setAttribute('aria-expanded', String(!expanded));
+        return;
+      }
+      var addCancel = e.target.closest('[data-menu-add-cancel]');
+      if(addCancel){
+        var cday = addCancel.dataset.menuAddCancel;
+        var cform = document.querySelector('[data-menu-add-form="' + cday + '"]');
+        if(cform) cform.hidden = true;
+        var ctoggle = document.querySelector('[data-menu-add-toggle="' + cday + '"]');
+        if(ctoggle) ctoggle.setAttribute('aria-expanded', 'false');
+        return;
+      }
+      var addConfirm = e.target.closest('[data-menu-add-confirm]');
+      if(addConfirm){
+        var day2 = addConfirm.dataset.menuAddConfirm;
+        var fields = readCustomExerciseForm(day2);
+        if(!fields){ document.getElementById('menu-add-name-' + day2).focus(); return; }
+        fields.day = day2;
+        addCustomExercise(fields);
+        refreshDay(day2);
+        markNeedsBackup();
+        renderProgress();
+        return;
+      }
+    });
+
+    document.addEventListener('change', function(e){
+      var cb = e.target.closest('[id^="menu-add-bodyweight-"], #equip-add-bodyweight');
+      if(!cb) return;
+      var incRow = cb.id === 'equip-add-bodyweight'
+        ? document.getElementById('equip-add-inc-row')
+        : document.querySelector('[data-menu-add-inc-row="' + cb.id.replace('menu-add-bodyweight-', '') + '"]');
+      if(incRow){ incRow.style.display = cb.checked ? 'none' : ''; }
+    });
+  }
+
+  // ---- equipment tab: facility inventory, with "add candidate to menu" ----
+  var EQUIPMENT_INVENTORY = {
+    machine: [
+      {name:'レッグカール', used:true},
+      {name:'レッグエクステンション', note:'大腿四頭筋の仕上げ。脚の日にボリュームを足したくなったら追加候補。'},
+      {name:'レッグプレス', used:true},
+      {name:'ペックフライ', note:'ダンベルフライの代替、または胸の仕上げ種目として。'},
+      {name:'リアレイズ', note:'肩の後面。プレス種目が多く前面優位になりやすいので、バランス用に。'},
+      {name:'チェストプレス', note:'フリーウェイトのベンチプレスが軸のため通常は不要。ベンチプレス台が全て埋まっている時の代替。'},
+      {name:'ショルダープレス', note:'ダンベルショルダープレスの代替。'},
+      {name:'インナーサイ / アウターサイ', note:'股関節の内転・外転筋群。今のプログラム外の補助種目。'},
+      {name:'ラットプルダウン', used:true},
+      {name:'ローイング', used:true},
+      {name:'アブドミナルクランチ', note:'腹筋の補助。アブローラーで十分な間は優先度低め。'},
+      {name:'ローバック', note:'下背部の補助。デッドリフトの日にケアとして使える。'},
+      {name:'ハイパーバックエクステンション', note:'下背部・ハムストリングス・臀部。ローバックと同様の位置付け。'},
+      {name:'懸垂バー', used:true}
+    ],
+    free: [
+      {name:'パワーラック（×3）', used:true, note:'スクワット・デッドリフトで使用。'},
+      {name:'スミスマシン', note:'パワーラックが埋まっている時のスクワット/ベンチプレス代替。'},
+      {name:'ケーブルマシン', note:'プレスダウン・フェイスプルなど、種目を増やす時の拡張用途。'},
+      {name:'ベンチプレス（×3）', used:true},
+      {name:'インクラインベンチ', used:true},
+      {name:'プリチャーカール', note:'バーベルカールが混雑時の代替。'},
+      {name:'ダンベル（1〜30kg以上）', used:true}
+    ],
+    cardio: [
+      {name:'バイク / ランニングマシン / ステップ / クロストレーナー', note:'厚み計画には含まれていません。使う場合はトレーニング前のウォームアップとして5〜10分程度が目安です。'}
+    ]
+  };
+
+  function equipRowHtml(item){
+    var badge = item.used ? '<span class="badge used">使用中</span>' : '<span class="badge candidate">候補</span>';
+    var addBtn = item.used ? '' : '<button type="button" class="equip-add-btn" data-equip-add="' + item.name.replace(/"/g, '&quot;') + '">＋ 追加</button>';
+    return '<div class="inv-row">' +
+      '<div><div class="inv-name">' + item.name + '</div>' +
+      (item.note ? '<div class="inv-note">' + item.note + '</div>' : '') + '</div>' +
+      '<div class="inv-row-actions">' + badge + addBtn + '</div>' +
+    '</div>';
+  }
+
+  function renderEquipmentLists(){
+    var machineEl = document.getElementById('equip-list-machine');
+    var freeEl = document.getElementById('equip-list-free');
+    var cardioEl = document.getElementById('equip-list-cardio');
+    if(machineEl) machineEl.innerHTML = EQUIPMENT_INVENTORY.machine.map(equipRowHtml).join('');
+    if(freeEl) freeEl.innerHTML = EQUIPMENT_INVENTORY.free.map(equipRowHtml).join('');
+    if(cardioEl) cardioEl.innerHTML = EQUIPMENT_INVENTORY.cardio.map(equipRowHtml).join('');
+  }
+
+  function initEquipmentAdd(){
+    var form = document.getElementById('equip-add-form');
+    var title = document.getElementById('equip-add-form-title');
+    var status = document.getElementById('equip-add-status');
+    if(!form) return;
+    function report(msg){
+      if(!status) return;
+      status.textContent = msg;
+      status.classList.add('show');
+      clearTimeout(status._hideTimer);
+      status._hideTimer = setTimeout(function(){ status.classList.remove('show'); }, 3200);
+    }
+    document.addEventListener('click', function(e){
+      var addBtn = e.target.closest('[data-equip-add]');
+      if(addBtn){
+        var name = addBtn.dataset.equipAdd;
+        document.getElementById('equip-add-name').value = name;
+        if(title) title.textContent = '「' + name + '」をメニューに追加';
+        form.hidden = false;
+        form.scrollIntoView({behavior:'smooth', block:'center'});
+        return;
+      }
+      if(e.target.id === 'equip-add-cancel'){
+        form.hidden = true;
+        return;
+      }
+      if(e.target.id === 'equip-add-confirm'){
+        var fields = readCustomExerciseForm('equip');
+        if(!fields){ document.getElementById('equip-add-name').focus(); return; }
+        fields.day = document.getElementById('equip-add-day').value;
+        addCustomExercise(fields);
+        refreshDay(fields.day);
+        markNeedsBackup();
+        renderProgress();
+        form.hidden = true;
+        report('追加しました（' + dayLabel(fields.day) + '）');
+      }
+    });
+  }
+
+  function dayLabel(day){
+    return {full:'全身法', chest:'胸の日', back:'背中の日', leg:'脚の日'}[day] || day;
   }
 
   function initTabs(){
@@ -1972,6 +2618,13 @@
         document.getElementById('panel-' + btn.dataset.day).classList.add('active');
       });
     });
+    var jump = document.getElementById('equipment-jump');
+    if(jump){
+      jump.addEventListener('click', function(){
+        var eqBtn = document.querySelector('.tabbar button[data-day="equipment"]');
+        if(eqBtn){ eqBtn.click(); eqBtn.scrollIntoView({behavior:'smooth', block:'nearest'}); }
+      });
+    }
   }
 
   function initHistoryToggles(){
@@ -2004,7 +2657,7 @@
   // ---- progress tab: cross-day exercise merging + charts ----
   function exerciseDefsByName(){
     var map = {};
-    EXERCISES.forEach(function(ex){
+    allExercises().forEach(function(ex){
       if(!map[ex.name]){
         map[ex.name] = {name:ex.name, pose:ex.pose, inc:ex.inc, repLow:ex.repLow, repHigh:ex.repHigh, ids:[ex.id], main:!!ex.main};
       } else {
@@ -2018,7 +2671,7 @@
   function orderedExerciseNames(){
     var seen = {};
     var ordered = [];
-    EXERCISES.forEach(function(ex){
+    allExercises().forEach(function(ex){
       if(!seen[ex.name]){ seen[ex.name] = true; ordered.push(ex.name); }
     });
     return ordered;
@@ -2184,17 +2837,19 @@
   function populateExerciseSelect(){
     var sel = document.getElementById('chart-exercise-select');
     if(!sel) return;
+    // Rebuilt on every call (not just once) since menu customization can add or
+    // remove exercises at runtime — a stale option list would hide new ones.
     var ordered = orderedExerciseNames();
-    if(!sel.dataset.populated){
-      sel.innerHTML = ordered.map(function(name){ return '<option value="' + name + '">' + name + '</option>'; }).join('');
-      sel.dataset.populated = '1';
+    sel.innerHTML = ordered.map(function(name){ return '<option value="' + name + '">' + name + '</option>'; }).join('');
+    if(!sel.dataset.wired){
+      sel.dataset.wired = '1';
       sel.addEventListener('change', function(){
         currentChartExercise = sel.value;
         renderMainChart(currentChartExercise);
         renderMiniCharts();
       });
     }
-    if(!currentChartExercise){
+    if(!currentChartExercise || ordered.indexOf(currentChartExercise) === -1){
       var best = ordered[0], bestCount = -1;
       ordered.forEach(function(name){
         var c = mergedEntries(name).length;
@@ -2349,7 +3004,7 @@
       var exId = btn.dataset.exId;
       var idx = parseInt(btn.dataset.idx, 10);
       if(deleteLogEntry(exId, idx)){
-        var ex = EXERCISES.find(function(x){ return x.id === exId; });
+        var ex = allExercises().find(function(x){ return x.id === exId; });
         if(ex){ refreshDay(ex.day); }
         renderPhaseSchedule();
         renderProgress();
@@ -2394,7 +3049,7 @@
 
         rows.forEach(function(row){
           var exId = row.dataset.exId;
-          var ex = EXERCISES.find(function(x){ return x.id === exId; });
+          var ex = allExercises().find(function(x){ return x.id === exId; });
           var units = row.querySelectorAll('.set-unit');
           var sets = [];
           units.forEach(function(u){
@@ -2607,6 +3262,10 @@
   initBackupButton();
   initRestoreInput();
   initRecoverBanner();
+  initMenuEditToggles();
+  initMenuEditActions();
+  renderEquipmentLists();
+  initEquipmentAdd();
   renderProgress();
 })();
 </script>
