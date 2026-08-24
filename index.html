@@ -1962,7 +1962,16 @@
   }
   function removeFromMenu(exId){
     var menu = loadMenu();
-    if(menu.removed.indexOf(exId) === -1){ menu.removed.push(exId); }
+    var isCustom = exId.indexOf('custom-') === 0;
+    var hasHistory = (loadLog()[exId] || []).length > 0;
+    if(isCustom && !hasHistory){
+      // Never-used custom exercise (e.g. added with a typo'd value): nothing
+      // to preserve, so just delete it outright instead of cluttering the
+      // "hidden exercises" list with entries no one will ever restore.
+      menu.custom = menu.custom.filter(function(e){ return e.id !== exId; });
+    } else if(menu.removed.indexOf(exId) === -1){
+      menu.removed.push(exId);
+    }
     saveMenu(menu);
   }
   function restoreToMenu(exId){
@@ -2001,6 +2010,22 @@
     menu.custom.push(ex);
     saveMenu(menu);
     return ex;
+  }
+  function updateCustomExercise(exId, fields){
+    var menu = loadMenu();
+    var idx = menu.custom.findIndex(function(e){ return e.id === exId; });
+    if(idx === -1) return null;
+    var existing = menu.custom[idx];
+    var updated = Object.assign({}, existing, {
+      name: fields.name,
+      sets: fields.sets,
+      repLow: fields.repLow,
+      repHigh: fields.repHigh,
+      inc: fields.bodyweight ? null : fields.inc
+    });
+    menu.custom[idx] = updated;
+    saveMenu(menu);
+    return updated;
   }
 
   var STORAGE_KEY = 'atsumi-keikaku-log-v1';
@@ -2611,11 +2636,13 @@
 
   // ---- per-day menu editing: reorder / remove / restore / add a custom exercise ----
   function menuEditRowHtml(day, ex, idx, total){
+    var isCustom = ex.id.indexOf('custom-') === 0;
     return '<div class="menu-edit-row">' +
       '<span class="menu-edit-name">' + ex.name + '</span>' +
       '<div class="menu-edit-btns">' +
         '<button type="button" data-menu-up="' + ex.id + '" data-menu-day="' + day + '" aria-label="上へ"' + (idx === 0 ? ' disabled' : '') + '>▲</button>' +
         '<button type="button" data-menu-down="' + ex.id + '" data-menu-day="' + day + '" aria-label="下へ"' + (idx === total - 1 ? ' disabled' : '') + '>▼</button>' +
+        (isCustom ? '<button type="button" data-menu-edit="' + ex.id + '" data-menu-day="' + day + '" aria-label="編集">✎</button>' : '') +
         '<button type="button" class="menu-edit-remove" data-menu-remove="' + ex.id + '" data-menu-day="' + day + '" data-confirm="0">外す</button>' +
       '</div>' +
     '</div>';
@@ -2702,6 +2729,28 @@
     };
   }
 
+  // Clears any in-progress "editing exercise X" state and blank-slates the
+  // add form's fields — used when the form is closed/cancelled without
+  // submitting, so the next open starts fresh instead of half pre-filled.
+  function resetMenuAddForm(day){
+    var confirmBtn = document.querySelector('[data-menu-add-confirm="' + day + '"]');
+    if(confirmBtn){ delete confirmBtn.dataset.editingId; confirmBtn.textContent = '追加する'; }
+    var nameEl = document.getElementById('menu-add-name-' + day);
+    if(nameEl) nameEl.value = '';
+    var setsEl = document.getElementById('menu-add-sets-' + day);
+    if(setsEl) setsEl.value = 3;
+    var lowEl = document.getElementById('menu-add-replow-' + day);
+    if(lowEl) lowEl.value = 8;
+    var highEl = document.getElementById('menu-add-rephigh-' + day);
+    if(highEl) highEl.value = 12;
+    var bwEl = document.getElementById('menu-add-bodyweight-' + day);
+    if(bwEl) bwEl.checked = false;
+    var incRow = document.querySelector('[data-menu-add-inc-row="' + day + '"]');
+    if(incRow) incRow.style.display = '';
+    var incEl = document.getElementById('menu-add-inc-' + day);
+    if(incEl) incEl.value = 2.5;
+  }
+
   function initMenuEditActions(){
     document.addEventListener('click', function(e){
       var up = e.target.closest('[data-menu-up]');
@@ -2746,6 +2795,31 @@
         markNeedsBackup();
         return;
       }
+      var edit = e.target.closest('[data-menu-edit]');
+      if(edit){
+        var eday = edit.dataset.menuDay;
+        var exId = edit.dataset.menuEdit;
+        var ex = allExercises().find(function(x){ return x.id === exId; });
+        var eform = document.querySelector('[data-menu-add-form="' + eday + '"]');
+        var etoggle = document.querySelector('[data-menu-add-toggle="' + eday + '"]');
+        if(!ex || !eform) return;
+        eform.hidden = false;
+        if(etoggle) etoggle.setAttribute('aria-expanded', 'true');
+        document.getElementById('menu-add-name-' + eday).value = ex.name;
+        document.getElementById('menu-add-sets-' + eday).value = ex.sets;
+        document.getElementById('menu-add-replow-' + eday).value = ex.repLow;
+        document.getElementById('menu-add-rephigh-' + eday).value = ex.repHigh;
+        var bwCb = document.getElementById('menu-add-bodyweight-' + eday);
+        bwCb.checked = ex.inc === null;
+        var incRow = document.querySelector('[data-menu-add-inc-row="' + eday + '"]');
+        if(incRow) incRow.style.display = bwCb.checked ? 'none' : '';
+        document.getElementById('menu-add-inc-' + eday).value = ex.inc === null ? 2.5 : ex.inc;
+        var editConfirmBtn = document.querySelector('[data-menu-add-confirm="' + eday + '"]');
+        editConfirmBtn.dataset.editingId = exId;
+        editConfirmBtn.textContent = '更新する';
+        eform.scrollIntoView({behavior:'smooth', block:'nearest'});
+        return;
+      }
       var addToggle = e.target.closest('[data-menu-add-toggle]');
       if(addToggle){
         var aday = addToggle.dataset.menuAddToggle;
@@ -2754,6 +2828,7 @@
         var expanded = addToggle.getAttribute('aria-expanded') === 'true';
         form.hidden = expanded;
         addToggle.setAttribute('aria-expanded', String(!expanded));
+        if(expanded){ resetMenuAddForm(aday); }
         return;
       }
       var addCancel = e.target.closest('[data-menu-add-cancel]');
@@ -2763,6 +2838,7 @@
         if(cform) cform.hidden = true;
         var ctoggle = document.querySelector('[data-menu-add-toggle="' + cday + '"]');
         if(ctoggle) ctoggle.setAttribute('aria-expanded', 'false');
+        resetMenuAddForm(cday);
         return;
       }
       var addConfirm = e.target.closest('[data-menu-add-confirm]');
@@ -2771,8 +2847,12 @@
         var fields = readCustomExerciseForm(day2);
         if(!fields){ document.getElementById('menu-add-name-' + day2).focus(); return; }
         fields.day = day2;
-        addCustomExercise(fields);
-        refreshDay(day2);
+        if(addConfirm.dataset.editingId){
+          updateCustomExercise(addConfirm.dataset.editingId, fields);
+        } else {
+          addCustomExercise(fields);
+        }
+        refreshDay(day2); // regenerates the panel fresh, clearing edit-mode state too
         markNeedsBackup();
         renderProgress();
         return;
