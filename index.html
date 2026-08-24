@@ -3258,7 +3258,7 @@
     var stats = [
       {label:'総セッション数', value:sessions + '回'},
       {label:'総挙上量', value:Math.round(totalVol).toLocaleString('ja-JP') + 'kg'},
-      {label:'継続', value:daysLabel}
+      {label:'開始から', value:daysLabel}
     ];
     el.innerHTML = stats.map(function(s){
       return '<div class="stat-card"><span class="stat-card-label">' + s.label + '</span><span class="stat-card-value">' + s.value + '</span></div>';
