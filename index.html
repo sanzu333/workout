@@ -151,18 +151,6 @@
     flex-wrap:wrap;
     margin-top:2px;
   }
-  .sync-status{
-    font-family:var(--mono);
-    font-size:.72rem;
-    font-weight:600;
-    padding:4px 10px;
-    border-radius:999px;
-    border:1px solid var(--border);
-    color:var(--text-dim);
-    background:var(--surface);
-  }
-  .sync-status.ok{ color:var(--success); border-color:var(--success); background:var(--success-soft); }
-  .sync-status.warn{ color:var(--warning); border-color:var(--warning); background:var(--warning-soft); }
   .backup-btn{
     display:inline-flex;
     align-items:center;
@@ -190,6 +178,7 @@
   .backup-status.warn{ color:var(--danger); }
   .backup-btn.needs-backup{ border-color:var(--warning); color:var(--warning); }
   .backup-btn.needs-backup::after{ content:''; display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--warning); margin-left:6px; }
+  .recover-banner[hidden]{ display:none; }
   .recover-banner{
     display:flex;
     align-items:center;
@@ -1127,7 +1116,6 @@
     </div>
     <a class="header-link" href="https://claude.ai/code/artifact/2e7e3f7c-bb1f-4724-9d32-e64e85eed4b5" target="_blank" rel="noopener">設備リファレンス →</a>
     <div class="data-status-row">
-      <span class="sync-status neutral" id="sync-status">☁️ 未同期</span>
       <button type="button" class="backup-btn" id="backup-btn">📥 バックアップを保存</button>
       <label class="backup-btn" for="restore-input">📤 バックアップから復元</label>
       <input type="file" id="restore-input" accept="application/json,.json" hidden>
@@ -1194,7 +1182,6 @@
           <input type="date" id="date-full" data-day="full">
         </div>
         <div class="toolbar-actions">
-          <span class="sync-status neutral">☁️ 未同期</span>
           <span class="save-status" id="status-full">保存しました</span>
           <button class="btn primary" data-save="full">この日の記録を保存</button>
         </div>
@@ -1214,7 +1201,6 @@
           <input type="date" id="date-chest" data-day="chest">
         </div>
         <div class="toolbar-actions">
-          <span class="sync-status neutral">☁️ 未同期</span>
           <span class="save-status" id="status-chest">保存しました</span>
           <button class="btn primary" data-save="chest">この日の記録を保存</button>
         </div>
@@ -1234,7 +1220,6 @@
           <input type="date" id="date-back" data-day="back">
         </div>
         <div class="toolbar-actions">
-          <span class="sync-status neutral">☁️ 未同期</span>
           <span class="save-status" id="status-back">保存しました</span>
           <button class="btn primary" data-save="back">この日の記録を保存</button>
         </div>
@@ -1254,7 +1239,6 @@
           <input type="date" id="date-leg" data-day="leg">
         </div>
         <div class="toolbar-actions">
-          <span class="sync-status neutral">☁️ 未同期</span>
           <span class="save-status" id="status-leg">保存しました</span>
           <button class="btn primary" data-save="leg">この日の記録を保存</button>
         </div>
@@ -1656,86 +1640,7 @@
     return false;
   }
 
-  // ---- cross-device sync via the artifact capability (best-effort; localStorage stays the source of truth locally) ----
-  var SYNC_DATA_PATH = 'data/log.json';
-  var SYNC_STATUS_KEY = 'atsumi-keikaku-sync-status-v1';
-
-  function setSyncStatus(state, code){
-    try{ localStorage.setItem(SYNC_STATUS_KEY, JSON.stringify({state:state, code:code || '', at:new Date().toISOString()})); }catch(e){}
-    renderSyncStatus();
-  }
-
-  function renderSyncStatus(){
-    var els = document.querySelectorAll('.sync-status');
-    if(!els.length) return;
-    var raw, s;
-    try{ raw = localStorage.getItem(SYNC_STATUS_KEY); }catch(e){ raw = null; }
-    try{ s = raw ? JSON.parse(raw) : null; }catch(e){ s = null; }
-    var cls, text;
-    if(!s){
-      cls = 'sync-status neutral';
-      text = '☁️ 未同期';
-    } else {
-      var timeStr = '';
-      try{
-        var d = new Date(s.at);
-        timeStr = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
-      }catch(e){}
-      if(s.state === 'ok'){
-        cls = 'sync-status ok';
-        text = '☁️ ' + timeStr + ' に他端末と同期済み';
-      } else if(s.state === 'unavailable'){
-        cls = 'sync-status warn';
-        text = '⚠️ この環境ではクラウド同期非対応。バックアップを保存してください';
-      } else {
-        cls = 'sync-status warn';
-        text = '⚠️ ' + timeStr + ' 同期失敗' + (s.code ? '(' + s.code + ')' : '') + '(この端末には保存済み)';
-      }
-    }
-    els.forEach(function(el){
-      el.className = cls;
-      el.textContent = text;
-    });
-  }
-
-  // Codes the runtime documents as permanent for this view — retrying never helps,
-  // so these get the calm "not supported here" message instead of a scary "failed".
-  var SYNC_PERMANENT_CODES = {
-    capability_disabled: true,
-    capability_removed: true,
-    not_granted: true,
-    not_writer: true,
-    not_declared: true
-  };
-
-  function syncToServer(){
-    if(!window.claude || typeof window.claude.use !== 'function'){
-      setSyncStatus('unavailable');
-      return;
-    }
-    window.claude.use('artifact').then(function(cap){
-      if(!cap || typeof cap.publish !== 'function'){ setSyncStatus('unavailable'); return; }
-      var payload = JSON.stringify({
-        log: loadLog(),
-        profile: loadProfile(),
-        phase1Override: loadPhase1Override()
-      });
-      var files = {};
-      files[SYNC_DATA_PATH] = payload;
-      return cap.publish(files).then(function(){
-        setSyncStatus('ok');
-      }, function(err){
-        var code = err && err.code;
-        setSyncStatus(SYNC_PERMANENT_CODES[code] ? 'unavailable' : 'error', code);
-      });
-    }).catch(function(err){
-      var code = err && err.code;
-      setSyncStatus(SYNC_PERMANENT_CODES[code] ? 'unavailable' : 'error', code);
-    });
-  }
-
-  // This platform has no reliable persistent/cloud storage for this artifact (sync above
-  // is confirmed permanently disabled), so a fresh backup file is the only real safety net.
+  // A fresh backup file is this app's real safety net (no server-side storage exists).
   // These two helpers keep that fact visible instead of silent: a dot on the backup button
   // when there's unbacked-up data, and a recovery banner when local storage looks wiped.
   var NEEDS_BACKUP_KEY = 'atsumi-keikaku-needs-backup-v1';
@@ -1895,43 +1800,8 @@
         report('復元しました', false);
         markNeedsBackup();
         updateRecoverBanner();
-        syncToServer();
       }).catch(function(){ report('読み込みに失敗しました', true); });
     });
-  }
-
-  function totalLogEntries(log){
-    var n = 0;
-    Object.keys(log || {}).forEach(function(exId){ n += (log[exId] || []).length; });
-    return n;
-  }
-
-  function hydrateFromServer(){
-    if(typeof fetch !== 'function') return;
-    fetch(SYNC_DATA_PATH, {cache:'no-store'}).then(function(res){
-      return res.ok ? res.json() : null;
-    }).then(function(data){
-      if(!data || !data.log) return;
-      var serverLog = normalizeLog(data.log);
-      // Never let a stale/smaller server copy erase fuller local data — only pull when the
-      // server genuinely has more recorded sets than this device does right now.
-      if(totalLogEntries(serverLog) <= totalLogEntries(loadLog())) return;
-      saveLog(serverLog);
-      if(data.profile){ saveProfile(data.profile); }
-      if(data.phase1Override !== undefined){ savePhase1Override(data.phase1Override); }
-      renderLists();
-      renderPhaseSchedule();
-      renderProgress();
-      var profile = loadProfile();
-      var wInput = document.getElementById('p-weight');
-      var hInput = document.getElementById('p-height');
-      var aInput = document.getElementById('p-age');
-      if(wInput) wInput.value = profile.weight;
-      if(hInput) hInput.value = profile.height;
-      if(aInput) aInput.value = profile.age;
-      updateBmi();
-      updateNutritionCallout();
-    }).catch(function(){ /* no server copy yet (first run) or offline: local data stays as-is */ });
   }
 
   function targetStr(ex){
@@ -2485,7 +2355,6 @@
         renderProgress();
         markNeedsBackup();
         updateRecoverBanner();
-        syncToServer();
       }
     });
   }
@@ -2567,7 +2436,6 @@
           renderProgress();
           markNeedsBackup();
           updateRecoverBanner();
-          syncToServer();
           var status = document.getElementById('status-' + day);
           status.classList.add('show');
           setTimeout(function(){ status.classList.remove('show'); }, 2200);
@@ -2629,7 +2497,6 @@
       updateBmi();
       updateNutritionCallout();
       markNeedsBackup();
-      syncToServer();
     }
     [wInput, hInput, aInput].forEach(function(inp){ inp.addEventListener('change', persist); });
     updateBmi();
@@ -2701,12 +2568,10 @@
     startInput.addEventListener('change', function(){
       savePhase1Override(startInput.value || null);
       renderPhaseSchedule();
-      syncToServer();
     });
     resetBtn.addEventListener('click', function(){
       savePhase1Override(null);
       renderPhaseSchedule();
-      syncToServer();
     });
     toggle.addEventListener('click', function(){
       var expanded = toggle.getAttribute('aria-expanded') === 'true';
@@ -2743,8 +2608,6 @@
   initRestoreInput();
   initRecoverBanner();
   renderProgress();
-  renderSyncStatus();
-  hydrateFromServer();
 })();
 </script>
 </body>
