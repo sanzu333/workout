@@ -1319,6 +1319,8 @@
 </head>
 <body>
 
+<datalist id="exercise-name-suggestions"></datalist>
+
 <div class="wrap">
 
   <header class="hero">
@@ -1594,7 +1596,7 @@
         <div class="field-row">
           <div class="field">
             <label for="equip-add-name">種目名</label>
-            <input type="text" id="equip-add-name">
+            <input type="text" id="equip-add-name" list="exercise-name-suggestions">
           </div>
           <div class="field">
             <label for="equip-add-day">追加する日</label>
@@ -2104,6 +2106,14 @@
     saveMenu(menu);
   }
   function addCustomExercise(fields){
+    // Reuse an existing same-day exercise with the exact same name instead of
+    // creating a duplicate — matters most for names typed by hand (the
+    // datalist suggests existing names, but doesn't force picking one).
+    var existing = allExercises().find(function(e){ return e.day === fields.day && e.name === fields.name; });
+    if(existing){
+      restoreToMenu(existing.id); // in case it had been hidden from the day
+      return existing;
+    }
     var menu = loadMenu();
     var id = 'custom-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
     var dayMax = allExercises().filter(function(e){ return e.day === fields.day; })
@@ -2807,7 +2817,7 @@
       : '';
     return '<div class="sub-inline-form" data-sub-form="' + ex.id + '" hidden>' +
       suggestHtml +
-      '<input type="text" placeholder="代替の種目名" data-sub-name="' + ex.id + '">' +
+      '<input type="text" placeholder="代替の種目名" data-sub-name="' + ex.id + '" list="exercise-name-suggestions">' +
       '<div class="menu-add-actions">' +
         '<button type="button" class="btn primary" data-sub-confirm="' + ex.id + '" data-sub-day="' + ex.day + '">この種目で記録欄を出す</button>' +
         '<button type="button" class="link-btn" data-sub-cancel="' + ex.id + '">キャンセル</button>' +
@@ -2822,6 +2832,19 @@
       ? items.map(renderExRow).join('')
       : '<p class="menu-edit-empty">この日のメニューは空です。「✎ メニューを編集」から種目を追加してください。</p>';
     renderMenuEditPanel(day);
+    renderExerciseNameDatalist();
+  }
+
+  // Backs the name-input suggestions for "add exercise" / "record with a
+  // substitute" — an existing name picked from here matches exactly, so a
+  // near-duplicate typed by hand (extra space, katakana variant, etc.)
+  // doesn't silently fragment that exercise's history into two.
+  function renderExerciseNameDatalist(){
+    var el = document.getElementById('exercise-name-suggestions');
+    if(!el) return;
+    el.innerHTML = orderedExerciseNames().map(function(name){
+      return '<option value="' + name + '"></option>';
+    }).join('');
   }
 
   function renderLists(){
@@ -2851,7 +2874,7 @@
       '<button type="button" class="link-btn menu-add-toggle" data-menu-add-toggle="' + day + '" aria-expanded="false">＋ 種目を追加</button>' +
       '<div class="menu-add-form" data-menu-add-form="' + day + '" hidden>' +
         '<div class="field-row">' +
-          '<div class="field"><label for="menu-add-name-' + day + '">種目名</label><input type="text" id="menu-add-name-' + day + '"></div>' +
+          '<div class="field"><label for="menu-add-name-' + day + '">種目名</label><input type="text" id="menu-add-name-' + day + '" list="exercise-name-suggestions"></div>' +
         '</div>' +
         '<div class="field-row">' +
           '<div class="field"><label for="menu-add-sets-' + day + '">セット数</label><input type="number" id="menu-add-sets-' + day + '" value="3" min="1" max="10"></div>' +
@@ -3224,8 +3247,8 @@
   // logged under their own tracked exercise instead of typed into the
   // original's weight/rep fields with mismatched units.
   function findOrCreateSubstitute(day, name, baseEx){
-    var existing = allExercises().find(function(e){ return e.day === day && e.name === name; });
-    if(existing) return existing;
+    // addCustomExercise itself now reuses a same-day exact-name match, so
+    // this only needs to supply sensible defaults for a genuinely new one.
     return addCustomExercise({
       day: day,
       name: name,
