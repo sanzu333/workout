@@ -2795,7 +2795,7 @@
         '<div class="set-inputs">' + setInputsHtml(ex, last) + '</div>' +
         '<div class="ex-suggestion"><span class="chip ' + s.chip + '">' + s.label + '</span><span>' + s.detail + '</span></div>' +
         '<div class="ex-row-actions">' +
-          '<button type="button" class="skip-toggle" data-ex-id="' + ex.id + '">スキップ</button>' +
+          '<button type="button" class="skip-toggle" data-ex-id="' + ex.id + '">Skip</button>' +
           '<span class="ex-row-links">' +
             '<button type="button" class="ex-action-link sub-toggle" data-ex-id="' + ex.id + '" data-day="' + ex.day + '" aria-expanded="false">代替で記録</button>' +
             '<button type="button" class="history-toggle" data-ex-id="' + ex.id + '">履歴</button>' +
@@ -3252,7 +3252,7 @@
         if(skipped){ sel.value = ''; }
         sel.disabled = skipped;
       });
-      btn.textContent = skipped ? '解除' : 'スキップ';
+      btn.textContent = skipped ? '解除' : 'Skip';
     });
   }
 
