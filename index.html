@@ -1265,6 +1265,8 @@
   .chart-axis-label{ font-family:var(--mono); font-size:9px; fill:var(--text-dim); }
   .chart-empty-label{ font-family:var(--display); font-size:12px; fill:var(--text-dim); }
   .chart-single-label{ font-family:var(--mono); font-size:11px; font-weight:700; fill:var(--text); }
+  .chart-dot-mini{ fill:var(--surface); stroke:var(--data); stroke-width:1.5; }
+  .chart-point-label{ font-family:var(--mono); font-size:9px; font-weight:600; fill:var(--text-dim); }
 
   .mini-chart-grid{
     display:grid;
@@ -3472,6 +3474,24 @@
     }
     svg += '<path d="' + areaPath + '" class="chart-area"></path>';
     svg += '<polyline points="' + linePts + '" class="chart-line"></polyline>';
+    if(!compact){
+      // A handful of evenly-spaced value labels instead of one per point —
+      // with a few sessions that's every point, but it stays readable
+      // instead of turning into a wall of overlapping numbers once months
+      // of records pile up. The last point keeps its own bigger dot below
+      // (plus the current-value summary above the chart), so it's skipped
+      // here to avoid stacking two labels on top of each other.
+      var maxLabels = 5;
+      var milestoneIdxs = n <= maxLabels
+        ? points.map(function(p, i){ return i; })
+        : Array.from(new Set(Array.from({length: maxLabels}, function(_, k){ return Math.round(k * (n - 1) / (maxLabels - 1)); })));
+      milestoneIdxs.filter(function(i){ return i !== n - 1; }).forEach(function(i){
+        var px = xAt(i), py = yAt(points[i].y);
+        svg += '<circle cx="' + px + '" cy="' + py + '" r="3" class="chart-dot chart-dot-mini"></circle>';
+        var labelY = py < padT + 18 ? py + 16 : py - 10;
+        svg += '<text x="' + px + '" y="' + labelY + '" text-anchor="middle" class="chart-point-label">' + points[i].y + '</text>';
+      });
+    }
     svg += '<circle cx="' + lastX + '" cy="' + lastY + '" r="' + dotR + '" class="chart-dot"></circle>';
     if(!compact){
       svg += '<text x="' + padL + '" y="' + (h - 6) + '" class="chart-axis-label">' + (points[0].label || '') + '</text>';
