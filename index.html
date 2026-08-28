@@ -947,9 +947,23 @@
   }
   .history-toggle:hover, .weight-history-toggle:hover, .ex-action-link:hover{ color:var(--text); }
   .history-panel, .weight-history-panel{ margin-top:8px; }
-  .ex-row-actions{ display:flex; gap:14px; flex-wrap:wrap; margin-top:4px; }
+  .ex-row-actions{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-top:4px; }
+  .ex-row-links{ display:flex; gap:14px; flex-wrap:wrap; }
+  .skip-toggle{
+    font-family:var(--mono);
+    font-size:.72rem;
+    font-weight:600;
+    padding:5px 12px;
+    border-radius:999px;
+    border:1px solid var(--border);
+    background:var(--surface);
+    color:var(--text-dim);
+    cursor:pointer;
+  }
+  .skip-toggle:hover{ border-color:var(--text-dim); color:var(--text); }
   .ex-row.skipped{ opacity:.55; }
   .ex-row.skipped .set-inputs{ pointer-events:none; }
+  .ex-row.skipped .skip-toggle{ background:var(--warning-soft); border-color:var(--warning); color:var(--warning); opacity:1; }
   .skip-chip{
     font-family:var(--mono);
     font-size:.72rem;
@@ -2781,9 +2795,11 @@
         '<div class="set-inputs">' + setInputsHtml(ex, last) + '</div>' +
         '<div class="ex-suggestion"><span class="chip ' + s.chip + '">' + s.label + '</span><span>' + s.detail + '</span></div>' +
         '<div class="ex-row-actions">' +
-          '<button type="button" class="ex-action-link skip-toggle" data-ex-id="' + ex.id + '">今日はスキップ</button>' +
-          '<button type="button" class="ex-action-link sub-toggle" data-ex-id="' + ex.id + '" data-day="' + ex.day + '" aria-expanded="false">代替で記録</button>' +
-          '<button type="button" class="history-toggle" data-ex-id="' + ex.id + '">履歴を見る</button>' +
+          '<button type="button" class="skip-toggle" data-ex-id="' + ex.id + '">スキップ</button>' +
+          '<span class="ex-row-links">' +
+            '<button type="button" class="ex-action-link sub-toggle" data-ex-id="' + ex.id + '" data-day="' + ex.day + '" aria-expanded="false">代替で記録</button>' +
+            '<button type="button" class="history-toggle" data-ex-id="' + ex.id + '">履歴</button>' +
+          '</span>' +
         '</div>' +
         substituteFormHtml(ex) +
         '<div class="history-panel" hidden></div>' +
@@ -3213,10 +3229,10 @@
       if(panel.hidden){
         panel.innerHTML = historyRowsHtml(exId);
         panel.hidden = false;
-        btn.textContent = '履歴を閉じる';
+        btn.textContent = '閉じる';
       } else {
         panel.hidden = true;
-        btn.textContent = '履歴を見る';
+        btn.textContent = '履歴';
       }
     });
   }
@@ -3236,7 +3252,7 @@
         if(skipped){ sel.value = ''; }
         sel.disabled = skipped;
       });
-      btn.textContent = skipped ? 'スキップを解除' : '今日はスキップ';
+      btn.textContent = skipped ? '解除' : 'スキップ';
     });
   }
 
