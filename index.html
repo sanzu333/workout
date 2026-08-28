@@ -1019,7 +1019,7 @@
   }
   .history-wrap{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
   .empty-history{ color:var(--text-dim); font-size:.8rem; padding:4px 0; }
-  table.history td.del-cell{ width:1%; text-align:right; }
+  table.history td.del-cell{ width:1%; text-align:right; white-space:nowrap; }
   .delete-entry{
     background:none;
     border:none;
@@ -1032,6 +1032,20 @@
   }
   .delete-entry:hover{ color:var(--danger); }
   .delete-entry.confirming{ color:var(--danger); font-weight:700; white-space:nowrap; }
+  .ref-toggle{
+    background:none;
+    border:none;
+    color:var(--text-dim);
+    font-family:var(--mono);
+    font-size:.72rem;
+    cursor:pointer;
+    padding:6px 8px;
+    margin:-6px 0;
+    text-decoration:underline;
+    text-underline-offset:2px;
+  }
+  .ref-toggle:hover{ color:var(--text); }
+  tr.excluded-row{ opacity:.55; }
 
   .callout{
     border:1px solid var(--border);
@@ -2177,6 +2191,20 @@
     }
     return false;
   }
+  // A placeholder number typed in just to get past a required save (before
+  // the skip feature existed, or for a day that genuinely was an outlier)
+  // shouldn't drive tomorrow's suggested weight. This keeps the entry in the
+  // history/stats — nothing is deleted — but excludes it from getLastEntry(),
+  // which is what the suggestion and next-input prefill are based on.
+  function toggleEntryReference(exId, idx){
+    var log = loadLog();
+    if(log[exId] && log[exId][idx] !== undefined){
+      log[exId][idx].excludeFromSuggestion = !log[exId][idx].excludeFromSuggestion;
+      saveLog(log);
+      return true;
+    }
+    return false;
+  }
 
   // A fresh backup file is this app's real safety net (no server-side storage exists).
   // These two helpers keep that fact visible instead of silent: a dot on the backup button
@@ -2602,7 +2630,10 @@
   }
   function getLastEntry(exId){
     var entries = getEntries(exId);
-    return entries.length ? entries[entries.length - 1] : null;
+    for(var i = entries.length - 1; i >= 0; i--){
+      if(!entries[i].excludeFromSuggestion){ return entries[i]; }
+    }
+    return null;
   }
 
   function round1(n){ return Math.round(n * 100) / 100; }
@@ -2701,12 +2732,16 @@
     var recent = indexed.slice().reverse().slice(0, 5);
     var rows = recent.map(function(item){
       var entry = item.entry;
+      var excluded = !!entry.excludeFromSuggestion;
       var setsStr = entry.sets.map(function(s){
         if(!isNaN(s.weight)){ return s.weight + 'kg×' + (isNaN(s.reps) ? '—' : s.reps); }
         return (isNaN(s.reps) ? '—' : s.reps) + '回';
       }).join(' / ');
-      return '<tr><td>' + entry.date + '</td><td>' + setsStr + '</td>' +
-        '<td class="del-cell"><button type="button" class="delete-entry" data-ex-id="' + exId + '" data-idx="' + item.idx + '" aria-label="この記録を削除">削除</button></td></tr>';
+      return '<tr' + (excluded ? ' class="excluded-row"' : '') + '><td>' + entry.date + (excluded ? '<span class="skip-chip">参考外</span>' : '') + '</td><td>' + setsStr + '</td>' +
+        '<td class="del-cell">' +
+          '<button type="button" class="ref-toggle" data-ex-id="' + exId + '" data-idx="' + item.idx + '">' + (excluded ? '参考にする' : '参考にしない') + '</button>' +
+          '<button type="button" class="delete-entry" data-ex-id="' + exId + '" data-idx="' + item.idx + '" aria-label="この記録を削除">削除</button>' +
+        '</td></tr>';
     }).join('');
     return '<div class="history-wrap"><table class="history"><thead><tr><th>日付</th><th>セット内容</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>';
   }
@@ -3677,6 +3712,17 @@
           renderWeightChart();
           markNeedsBackup();
         }
+        return;
+      }
+
+      var refBtn = e.target.closest('.ref-toggle');
+      if(refBtn){
+        toggleEntryReference(refBtn.dataset.exId, parseInt(refBtn.dataset.idx, 10));
+        var refPanel = refBtn.closest('.history-panel');
+        if(refPanel){ refPanel.innerHTML = historyRowsHtml(refBtn.dataset.exId); }
+        var refEx = allExercises().find(function(x){ return x.id === refBtn.dataset.exId; });
+        if(refEx){ refreshDay(refEx.day); }
+        markNeedsBackup();
         return;
       }
 
