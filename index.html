@@ -3249,7 +3249,15 @@
       var row = btn.closest('.ex-row');
       var skipped = row.classList.toggle('skipped');
       row.querySelectorAll('.w-input, .r-input').forEach(function(sel){
-        if(skipped){ sel.value = ''; }
+        if(skipped){
+          // remember the suggested prefill so undoing skip can restore it,
+          // instead of leaving the field permanently blanked
+          sel.dataset.prevValue = sel.value;
+          sel.value = '';
+        } else {
+          sel.value = sel.dataset.prevValue || '';
+          delete sel.dataset.prevValue;
+        }
         sel.disabled = skipped;
       });
       btn.textContent = skipped ? '解除' : 'Skip';
