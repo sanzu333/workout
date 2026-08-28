@@ -932,7 +932,7 @@
   .chip.hold{ background:var(--accent-soft); color:var(--accent-2); }
   .chip.neutral{ background:var(--border); color:var(--text-dim); }
 
-  .history-toggle, .weight-history-toggle{
+  .history-toggle, .weight-history-toggle, .ex-action-link{
     background:none;
     border:none;
     padding:8px 2px;
@@ -945,8 +945,53 @@
     cursor:pointer;
     display:inline-block;
   }
-  .history-toggle:hover, .weight-history-toggle:hover{ color:var(--text); }
+  .history-toggle:hover, .weight-history-toggle:hover, .ex-action-link:hover{ color:var(--text); }
   .history-panel, .weight-history-panel{ margin-top:8px; }
+  .ex-row-actions{ display:flex; gap:14px; flex-wrap:wrap; margin-top:4px; }
+  .ex-row.skipped{ opacity:.55; }
+  .ex-row.skipped .set-inputs{ pointer-events:none; }
+  .skip-chip{
+    font-family:var(--mono);
+    font-size:.72rem;
+    font-weight:600;
+    color:var(--text-dim);
+    background:var(--surface-2);
+    padding:2px 9px;
+    border-radius:999px;
+    margin-left:8px;
+  }
+  .sub-inline-form[hidden]{ display:none; }
+  .sub-inline-form{
+    margin-top:10px;
+    padding:12px 14px;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    background:var(--surface-2);
+  }
+  .sub-suggest-row{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+  .sub-suggest-chip{
+    font-family:var(--mono);
+    font-size:.76rem;
+    font-weight:600;
+    padding:5px 11px;
+    border-radius:999px;
+    border:1px solid var(--accent);
+    color:var(--accent);
+    background:none;
+    cursor:pointer;
+  }
+  .sub-suggest-chip:hover{ background:var(--accent-soft); }
+  .sub-inline-form input[type="text"]{
+    width:100%;
+    font-family:var(--display);
+    font-size:16px;
+    padding:8px 10px;
+    border-radius:6px;
+    border:1px solid var(--border);
+    background:var(--bg);
+    color:var(--text);
+    margin-bottom:10px;
+  }
   .history-panel[hidden]{ display:none; }
 
   table.history{
@@ -2690,8 +2735,47 @@
       '<div class="ex-log">' +
         '<div class="set-inputs">' + setInputsHtml(ex, last) + '</div>' +
         '<div class="ex-suggestion"><span class="chip ' + s.chip + '">' + s.label + '</span><span>' + s.detail + '</span></div>' +
-        '<button type="button" class="history-toggle" data-ex-id="' + ex.id + '">履歴を見る</button>' +
+        '<div class="ex-row-actions">' +
+          '<button type="button" class="ex-action-link skip-toggle" data-ex-id="' + ex.id + '">今日はスキップ</button>' +
+          '<button type="button" class="ex-action-link sub-toggle" data-ex-id="' + ex.id + '" data-day="' + ex.day + '" aria-expanded="false">代替で記録</button>' +
+          '<button type="button" class="history-toggle" data-ex-id="' + ex.id + '">履歴を見る</button>' +
+        '</div>' +
+        substituteFormHtml(ex) +
         '<div class="history-panel" hidden></div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  // Exercises that get bumped by shared/reservable equipment, with the
+  // single-exercise fallback worth suggesting first — pulled from the
+  // 設備タブ's equipment/alternative table, kept here as clean short names
+  // instead of that table's free-text prose (some of which isn't a distinct
+  // exercise at all, e.g. "順番を後にずらす").
+  var SUBSTITUTE_SUGGESTIONS = {
+    'スクワット': 'スミスマシンスクワット',
+    'ベンチプレス': 'スミスマシンベンチプレス',
+    '懸垂': 'ラットプルダウン',
+    'ラットプルダウン': '懸垂',
+    'バーベルカール': 'ダンベルカール',
+    'ダンベルショルダープレス': 'ショルダープレス',
+    'ライイングトライセプスエクステンション': 'ケーブルプレスダウン',
+    'インクラインベンチプレス': 'インクラインダンベルプレス',
+    'ダンベルフライ': 'ペックフライ',
+    'サイドレイズ': 'ケーブルサイドレイズ',
+    'ローイング': 'シーテッドロー'
+  };
+
+  function substituteFormHtml(ex){
+    var suggestion = SUBSTITUTE_SUGGESTIONS[ex.name];
+    var suggestHtml = suggestion
+      ? '<div class="sub-suggest-row"><button type="button" class="sub-suggest-chip" data-sub-suggest="' + suggestion + '">' + suggestion + '</button></div>'
+      : '';
+    return '<div class="sub-inline-form" data-sub-form="' + ex.id + '" hidden>' +
+      suggestHtml +
+      '<input type="text" placeholder="代替の種目名" data-sub-name="' + ex.id + '">' +
+      '<div class="menu-add-actions">' +
+        '<button type="button" class="btn primary" data-sub-confirm="' + ex.id + '" data-sub-day="' + ex.day + '">この種目で記録欄を出す</button>' +
+        '<button type="button" class="link-btn" data-sub-cancel="' + ex.id + '">キャンセル</button>' +
       '</div>' +
     '</div>';
   }
@@ -3066,7 +3150,7 @@
     document.addEventListener('click', function(e){
       var btn = e.target.closest('.history-toggle');
       if(!btn) return;
-      var panel = btn.nextElementSibling;
+      var panel = btn.closest('.ex-log').querySelector('.history-panel');
       var exId = btn.dataset.exId;
       if(panel.hidden){
         panel.innerHTML = historyRowsHtml(exId);
@@ -3075,6 +3159,93 @@
       } else {
         panel.hidden = true;
         btn.textContent = '履歴を見る';
+      }
+    });
+  }
+
+  // Skipping was always possible by leaving a set's inputs blank — initSave()
+  // already excludes any exercise with no filled sets — but that left people
+  // guessing whether it was actually safe to leave things empty, which is
+  // exactly what led to typing in placeholder numbers just to feel "done".
+  // This makes skipping an explicit, visible action instead.
+  function initSkipToggle(){
+    document.addEventListener('click', function(e){
+      var btn = e.target.closest('.skip-toggle');
+      if(!btn) return;
+      var row = btn.closest('.ex-row');
+      var skipped = row.classList.toggle('skipped');
+      row.querySelectorAll('.w-input, .r-input').forEach(function(sel){
+        if(skipped){ sel.value = ''; }
+        sel.disabled = skipped;
+      });
+      btn.textContent = skipped ? 'スキップを解除' : '今日はスキップ';
+    });
+  }
+
+  // "Record with a substitute": when the usual equipment is taken, this adds
+  // a same-day stand-in exercise to the day's list (reusing an existing one
+  // by exact name if it's been used before, so its history stays together
+  // instead of fragmenting across duplicate entries) so its numbers get
+  // logged under their own tracked exercise instead of typed into the
+  // original's weight/rep fields with mismatched units.
+  function findOrCreateSubstitute(day, name, baseEx){
+    var existing = allExercises().find(function(e){ return e.day === day && e.name === name; });
+    if(existing) return existing;
+    return addCustomExercise({
+      day: day,
+      name: name,
+      sets: baseEx.sets,
+      repLow: baseEx.repLow,
+      repHigh: baseEx.repHigh,
+      inc: baseEx.inc,
+      bodyweight: baseEx.inc === null
+    });
+  }
+
+  function initSubstituteRecord(){
+    document.addEventListener('click', function(e){
+      var toggle = e.target.closest('.sub-toggle');
+      if(toggle){
+        var form = document.querySelector('[data-sub-form="' + toggle.dataset.exId + '"]');
+        if(!form) return;
+        var expanded = toggle.getAttribute('aria-expanded') === 'true';
+        form.hidden = expanded;
+        toggle.setAttribute('aria-expanded', String(!expanded));
+        return;
+      }
+      var suggest = e.target.closest('[data-sub-suggest]');
+      if(suggest){
+        var nameInput = suggest.closest('.sub-inline-form').querySelector('[data-sub-name]');
+        if(nameInput) nameInput.value = suggest.dataset.subSuggest;
+        return;
+      }
+      var cancel = e.target.closest('[data-sub-cancel]');
+      if(cancel){
+        var cform = document.querySelector('[data-sub-form="' + cancel.dataset.subCancel + '"]');
+        if(cform) cform.hidden = true;
+        var ctoggle = document.querySelector('.sub-toggle[data-ex-id="' + cancel.dataset.subCancel + '"]');
+        if(ctoggle) ctoggle.setAttribute('aria-expanded', 'false');
+        return;
+      }
+      var confirm = e.target.closest('[data-sub-confirm]');
+      if(confirm){
+        var exId = confirm.dataset.subConfirm;
+        var day = confirm.dataset.subDay;
+        var nameEl = document.querySelector('[data-sub-name="' + exId + '"]');
+        var name = (nameEl.value || '').trim();
+        if(!name){ nameEl.focus(); return; }
+        var baseEx = allExercises().find(function(e){ return e.id === exId; });
+        if(!baseEx) return;
+        var subEx = findOrCreateSubstitute(day, name, baseEx);
+        refreshDay(day);
+        markNeedsBackup();
+        renderProgress();
+        var newRow = document.querySelector('.ex-row[data-ex-id="' + subEx.id + '"]');
+        if(newRow){
+          newRow.querySelector('.ex-row-top').click();
+          newRow.scrollIntoView({behavior:'smooth', block:'center'});
+        }
+        return;
       }
     });
   }
@@ -3821,6 +3992,8 @@
   initEquipmentAdd();
   initWeightHistoryToggle();
   initSyncSetup();
+  initSkipToggle();
+  initSubstituteRecord();
   renderProgress();
   if(loadGistToken()){ pullFromGist(); }
 })();
