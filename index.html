@@ -1177,17 +1177,18 @@
     color:var(--text);
     font-variant-numeric:tabular-nums;
   }
-  .week-dots{ display:flex; gap:10px; }
+  .week-dots{ display:flex; gap:5px; }
   .week-dot{
     flex:1;
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:5px;
-    padding:10px 4px;
+    gap:4px;
+    padding:8px 2px;
     border-radius:8px;
     border:1px solid var(--border);
     background:var(--surface-2);
+    min-width:0;
   }
   .week-dot .wd-label{
     font-family:var(--mono);
@@ -1205,7 +1206,6 @@
   .week-dot.done .wd-mark, .week-dot.done .wd-label{ color:var(--success); }
   .week-dot.today{ border-color:var(--accent); }
   .week-dot.today .wd-label{ color:var(--accent); }
-  .week-dot.missed{ opacity:.55; }
 
   .chart-card{
     background:var(--surface);
@@ -3697,26 +3697,29 @@
     }).join('');
   }
 
+  // Shows the whole Mon-Sun week rather than fixed 月/水/金 slots, so a
+  // week where training actually landed on different days (travel, a
+  // reservation that didn't work out, etc.) still shows correctly instead
+  // of reading as 3 missed days. The target stays 3 sessions/week either way.
   function renderWeekTracker(){
     var el = document.getElementById('week-tracker');
     if(!el) return;
     var today = new Date(); today.setHours(0, 0, 0, 0);
     var todayIso = isoDate(today);
     var mon = startOfWeekMonday(today);
-    var days = [
-      {label:'月', date:isoDate(mon)},
-      {label:'水', date:isoDate(new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + 2))},
-      {label:'金', date:isoDate(new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + 4))}
-    ];
+    var labels = ['月','火','水','木','金','土','日'];
+    var days = labels.map(function(label, i){
+      return {label:label, date:isoDate(new Date(mon.getFullYear(), mon.getMonth(), mon.getDate() + i))};
+    });
     var dateSet = allLogDatesSet();
     var doneCount = 0;
     var dotsHtml = days.map(function(d){
       var done = !!dateSet[d.date];
       if(done){ doneCount++; }
-      var state = done ? 'done' : (d.date < todayIso ? 'missed' : (d.date === todayIso ? 'today' : ''));
+      var state = done ? 'done' : (d.date === todayIso ? 'today' : '');
       return '<div class="week-dot ' + state + '"><span class="wd-label">' + d.label + '</span><span class="wd-mark">' + (done ? '✓' : '') + '</span></div>';
     }).join('');
-    el.innerHTML = '<div class="week-tracker-head"><span class="form-label">今週の実施（月・水・金）</span><span class="week-count">' + doneCount + ' / 3</span></div>' +
+    el.innerHTML = '<div class="week-tracker-head"><span class="form-label">今週の実施</span><span class="week-count">' + doneCount + ' / 3</span></div>' +
       '<div class="week-dots">' + dotsHtml + '</div>';
   }
 
