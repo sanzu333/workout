@@ -3273,16 +3273,20 @@
   // logged under their own tracked exercise instead of typed into the
   // original's weight/rep fields with mismatched units.
   function findOrCreateSubstitute(day, name, baseEx){
-    // addCustomExercise itself now reuses a same-day exact-name match, so
-    // this only needs to supply sensible defaults for a genuinely new one.
+    // If a exercise with this exact name already exists anywhere (e.g. as a
+    // built-in on a different day — ラットプルダウン already exists on 背中の日),
+    // copy its real weight/bodyweight config instead of the ORIGINAL
+    // exercise's. Substituting a bodyweight move (懸垂) with a weighted
+    // machine (ラットプルダウン) shouldn't silently inherit "no weight field".
+    var knownConfig = allExercises().find(function(e){ return e.name === name; }) || baseEx;
     return addCustomExercise({
       day: day,
       name: name,
-      sets: baseEx.sets,
-      repLow: baseEx.repLow,
-      repHigh: baseEx.repHigh,
-      inc: baseEx.inc,
-      bodyweight: baseEx.inc === null
+      sets: knownConfig.sets,
+      repLow: knownConfig.repLow,
+      repHigh: knownConfig.repHigh,
+      inc: knownConfig.inc,
+      bodyweight: knownConfig.inc === null
     });
   }
 
