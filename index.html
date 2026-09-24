@@ -624,6 +624,13 @@
     min-height:44px;
   }
   .toolbar-actions{ display:flex; align-items:center; gap:12px; }
+  .day-toolbar-bottom{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    margin:20px 0;
+  }
   .save-status{
     font-family:var(--mono);
     font-size:.76rem;
@@ -632,11 +639,20 @@
     transition:opacity .3s;
   }
   .save-status.show{ opacity:1; }
+  .save-status.warn{ color:var(--danger); }
+  button.btn.small{
+    font-size:.82rem;
+    padding:8px 14px;
+    min-height:38px;
+  }
+  .ex-save-row{ display:flex; align-items:center; gap:12px; margin-top:10px; }
 
   @media (max-width:480px){
     .day-toolbar{ flex-direction:column; align-items:stretch; }
     .toolbar-actions{ flex-direction:column-reverse; align-items:stretch; gap:8px; }
     .toolbar-actions button.btn.primary{ width:100%; }
+    .day-toolbar-bottom{ flex-direction:column-reverse; align-items:stretch; gap:8px; }
+    .day-toolbar-bottom button.btn.primary{ width:100%; }
     .save-status{ text-align:center; }
   }
 
@@ -1454,11 +1470,15 @@
           <input type="date" id="date-full" data-day="full">
         </div>
         <div class="toolbar-actions">
-          <span class="save-status" id="status-full">保存しました</span>
+          <span class="save-status" data-day="full">保存しました</span>
           <button class="btn primary" data-save="full">この日の記録を保存</button>
         </div>
       </div>
       <div class="ex-list" data-list="full"></div>
+      <div class="day-toolbar day-toolbar-bottom">
+        <span class="save-status" data-day="full">保存しました</span>
+        <button class="btn primary" data-save="full">この日の記録を保存</button>
+      </div>
       <div class="callout">
         <span class="c-label">ポイント</span>
         アブローラーはセットアップとして軽めに。追い込みすぎるとこのあとのスクワット・ベンチプレスに響くので、余力を残して切り上げましょう。
@@ -1475,11 +1495,15 @@
           <input type="date" id="date-chest" data-day="chest">
         </div>
         <div class="toolbar-actions">
-          <span class="save-status" id="status-chest">保存しました</span>
+          <span class="save-status" data-day="chest">保存しました</span>
           <button class="btn primary" data-save="chest">この日の記録を保存</button>
         </div>
       </div>
       <div class="ex-list" data-list="chest"></div>
+      <div class="day-toolbar day-toolbar-bottom">
+        <span class="save-status" data-day="chest">保存しました</span>
+        <button class="btn primary" data-save="chest">この日の記録を保存</button>
+      </div>
       <div class="callout">
         <span class="c-label">ポイント</span>
         プレス種目が多く肩の前面に負荷が集中しやすい配分です。肩の張りや痛みを感じたら、余力のある週に背中の日でリアレイズかケーブルフェイスプルを1種目加えてバランスを取りましょう（🔧設備タブから追加できます）。
@@ -1496,11 +1520,15 @@
           <input type="date" id="date-back" data-day="back">
         </div>
         <div class="toolbar-actions">
-          <span class="save-status" id="status-back">保存しました</span>
+          <span class="save-status" data-day="back">保存しました</span>
           <button class="btn primary" data-save="back">この日の記録を保存</button>
         </div>
       </div>
       <div class="ex-list" data-list="back"></div>
+      <div class="day-toolbar day-toolbar-bottom">
+        <span class="save-status" data-day="back">保存しました</span>
+        <button class="btn primary" data-save="back">この日の記録を保存</button>
+      </div>
       <div class="callout">
         <span class="c-label">ポイント</span>
         デッドリフトはグリップと下背部の消耗がフォームに直結する種目です。懸垂の直後・他の種目より前に行い、フレッシュな状態で扱う順番を崩さないようにしましょう。握力が先に落ちてきたら、フックグリップやストラップの使用も検討してください。
@@ -1517,11 +1545,15 @@
           <input type="date" id="date-leg" data-day="leg">
         </div>
         <div class="toolbar-actions">
-          <span class="save-status" id="status-leg">保存しました</span>
+          <span class="save-status" data-day="leg">保存しました</span>
           <button class="btn primary" data-save="leg">この日の記録を保存</button>
         </div>
       </div>
       <div class="ex-list" data-list="leg"></div>
+      <div class="day-toolbar day-toolbar-bottom">
+        <span class="save-status" data-day="leg">保存しました</span>
+        <button class="btn primary" data-save="leg">この日の記録を保存</button>
+      </div>
       <div class="callout">
         <span class="c-label">ポイント</span>
         スクワットで疲労が大きい日は、レッグプレスやレッグカールの重量が伸び悩むことがあります。順番通り消化できていれば問題ありません。全種目で無理に自己ベストを狙う必要はありません。
@@ -2795,6 +2827,7 @@
       formPanelHtml(poseKey, ex.name) +
       '<div class="ex-log">' +
         '<div class="set-inputs">' + setInputsHtml(ex, last) + '</div>' +
+        '<div class="ex-save-row"><button type="button" class="btn small ex-save-btn">この種目を保存</button><span class="save-status ex-save-status">保存しました</span></div>' +
         '<div class="ex-suggestion"><span class="chip ' + s.chip + '">' + s.label + '</span><span>' + s.detail + '</span></div>' +
         '<div class="ex-row-actions">' +
           '<button type="button" class="skip-toggle" data-ex-id="' + ex.id + '">Skip</button>' +
@@ -3839,6 +3872,52 @@
     });
   }
 
+  // Reads one exercise row's typed sets and, if any are filled in, upserts
+  // them into `log` (mutated in place) for `date` and reports whether this
+  // was a new PR. Shared by the whole-day save and the per-exercise save
+  // button, so both stay in sync with exactly one PR/upsert implementation.
+  function saveOneExerciseRow(row, date, log){
+    var exId = row.dataset.exId;
+    var ex = allExercises().find(function(x){ return x.id === exId; });
+    var units = row.querySelectorAll('.set-unit');
+    var sets = [];
+    units.forEach(function(u){
+      var wEl = u.querySelector('.w-input');
+      var rEl = u.querySelector('.r-input');
+      var w = wEl ? parseFloat(wEl.value) : NaN;
+      var r = rEl ? parseFloat(rEl.value) : NaN;
+      if(!isNaN(w) || !isNaN(r)){ sets.push({weight:w, reps:r}); }
+    });
+    if(sets.length === 0) return {saved:false};
+    var isPR = false;
+    if(ex){
+      var bodyweight = ex.inc === null;
+      var prevEntries = mergedEntries(ex.name);
+      var prevMax = prevEntries.reduce(function(m, entry){
+        var v = entryMetric(entry, bodyweight);
+        return (v !== null && v > m) ? v : m;
+      }, -Infinity);
+      var thisMax = sets.reduce(function(m, s){
+        var v = bodyweight ? s.reps : s.weight;
+        return (!isNaN(v) && v > m) ? v : m;
+      }, -Infinity);
+      isPR = prevEntries.length > 0 && thisMax > prevMax;
+    }
+    log[exId] = log[exId] || [];
+    var sameDayIdx = log[exId].findIndex(function(entry){ return entry.date === date; });
+    if(sameDayIdx !== -1){ log[exId][sameDayIdx] = {date:date, sets:sets}; }
+    else { log[exId].push({date:date, sets:sets}); }
+    return {saved:true, isPR:isPR, ex:ex};
+  }
+
+  function flashSaveStatus(day){
+    document.querySelectorAll('.save-status[data-day="' + day + '"]').forEach(function(status){
+      status.classList.add('show');
+      clearTimeout(status._hideTimer);
+      status._hideTimer = setTimeout(function(){ status.classList.remove('show'); }, 2200);
+    });
+  }
+
   function initSave(){
     document.querySelectorAll('[data-save]').forEach(function(btn){
       btn.addEventListener('click', function(){
@@ -3851,39 +3930,10 @@
         var prNames = [];
 
         rows.forEach(function(row){
-          var exId = row.dataset.exId;
-          var ex = allExercises().find(function(x){ return x.id === exId; });
-          var units = row.querySelectorAll('.set-unit');
-          var sets = [];
-          units.forEach(function(u){
-            var wEl = u.querySelector('.w-input');
-            var rEl = u.querySelector('.r-input');
-            var w = wEl ? parseFloat(wEl.value) : NaN;
-            var r = rEl ? parseFloat(rEl.value) : NaN;
-            if(!isNaN(w) || !isNaN(r)){ sets.push({weight:w, reps:r}); }
-          });
-          if(sets.length > 0){
-            if(ex){
-              var bodyweight = ex.inc === null;
-              var prevEntries = mergedEntries(ex.name);
-              var prevMax = prevEntries.reduce(function(m, entry){
-                var v = entryMetric(entry, bodyweight);
-                return (v !== null && v > m) ? v : m;
-              }, -Infinity);
-              var thisMax = sets.reduce(function(m, s){
-                var v = bodyweight ? s.reps : s.weight;
-                return (!isNaN(v) && v > m) ? v : m;
-              }, -Infinity);
-              if(prevEntries.length > 0 && thisMax > prevMax){ prNames.push(ex.name); }
-            }
-            log[exId] = log[exId] || [];
-            var sameDayIdx = log[exId].findIndex(function(entry){ return entry.date === date; });
-            if(sameDayIdx !== -1){
-              log[exId][sameDayIdx] = {date:date, sets:sets};
-            } else {
-              log[exId].push({date:date, sets:sets});
-            }
+          var result = saveOneExerciseRow(row, date, log);
+          if(result.saved){
             savedAny = true;
+            if(result.isPR){ prNames.push(result.ex.name); }
           }
         });
 
@@ -3894,12 +3944,52 @@
           renderProgress();
           markNeedsBackup();
           updateRecoverBanner();
-          var status = document.getElementById('status-' + day);
-          status.classList.add('show');
-          setTimeout(function(){ status.classList.remove('show'); }, 2200);
+          flashSaveStatus(day);
           if(prNames.length){ showPrToast(prNames); }
         }
       });
+    });
+  }
+
+  // Saving per exercise (instead of only once at the end of the whole day)
+  // means a mid-workout reload only risks the one exercise being typed in
+  // right now, not everything logged since the day's save button was last
+  // pressed. Deliberately does NOT call refreshDay() — that would regenerate
+  // every row in the list and wipe out whatever's still being typed into the
+  // OTHER exercises that haven't been saved yet.
+  function initExerciseSave(){
+    document.addEventListener('click', function(e){
+      var btn = e.target.closest('.ex-save-btn');
+      if(!btn) return;
+      var row = btn.closest('.ex-row');
+      var day = row.closest('.day-panel').id.replace('panel-', '');
+      var dateInput = document.getElementById('date-' + day);
+      var date = dateInput.value || new Date().toISOString().slice(0,10);
+      var log = loadLog();
+      var result = saveOneExerciseRow(row, date, log);
+      var status = row.querySelector('.ex-save-status');
+      if(!result.saved){
+        if(status){
+          status.textContent = '記録を入力してください';
+          status.classList.add('show', 'warn');
+          clearTimeout(status._hideTimer);
+          status._hideTimer = setTimeout(function(){ status.classList.remove('show'); }, 2200);
+        }
+        return;
+      }
+      saveLog(log);
+      renderPhaseSchedule();
+      renderProgress();
+      markNeedsBackup();
+      updateRecoverBanner();
+      if(status){
+        status.textContent = '保存しました';
+        status.classList.remove('warn');
+        status.classList.add('show');
+        clearTimeout(status._hideTimer);
+        status._hideTimer = setTimeout(function(){ status.classList.remove('show'); }, 2200);
+      }
+      if(result.isPR){ showPrToast([result.ex.name]); }
     });
   }
 
@@ -4114,6 +4204,7 @@
   initSyncSetup();
   initSkipToggle();
   initSubstituteRecord();
+  initExerciseSave();
   renderProgress();
   if(loadGistToken()){ pullFromGist(); }
 })();
